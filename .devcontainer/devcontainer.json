@@ -5,6 +5,7 @@
   "hostRequirements": { "cpus": 4 },
   "containerEnv": {
     "ANTHROPIC_MODEL": "claude-sonnet-5-5",
+    "CLAUDE_CODE_RETRY_WATCHDOG": "1",
     "DISABLE_AUTOUPDATER": "1"
   },
   "onCreateCommand": "if [ -f package.json ]; then pnpm install; fi",

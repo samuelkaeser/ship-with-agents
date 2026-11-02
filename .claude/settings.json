@@ -1,7 +1,8 @@
 {
   "model": "claude-sonnet-5-5",
   "env": {
-    "ANTHROPIC_MODEL": "claude-sonnet-5-5"
+    "ANTHROPIC_MODEL": "claude-sonnet-5-5",
+    "CLAUDE_CODE_RETRY_WATCHDOG": "1"
   },
   "permissions": {
     "defaultMode": "acceptEdits",
