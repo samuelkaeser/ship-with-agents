@@ -1,0 +1,19 @@
+{
+  "model": "claude-sonnet-5-5",
+  "env": {
+    "ANTHROPIC_MODEL": "claude-sonnet-5-5"
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(pnpm *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}

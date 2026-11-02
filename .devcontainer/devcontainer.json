@@ -1,0 +1,12 @@
+{
+  "name": "ship-with-agents",
+  "build": { "dockerfile": "Dockerfile" },
+  "remoteUser": "node",
+  "hostRequirements": { "cpus": 4 },
+  "containerEnv": {
+    "ANTHROPIC_MODEL": "claude-sonnet-5-5",
+    "DISABLE_AUTOUPDATER": "1"
+  },
+  "onCreateCommand": "if [ -f package.json ]; then pnpm install; fi",
+  "postCreateCommand": "bash .devcontainer/post-create.sh ${containerWorkspaceFolder}"
+}
