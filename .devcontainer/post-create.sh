@@ -10,8 +10,8 @@ merge_json() {
   node -e '
     const fs = require("fs");
     const [file, patch] = process.argv.slice(1);
-    let cur = {};
-    if (fs.existsSync(file)) cur = JSON.parse(fs.readFileSync(file, "utf8"));
+    const text = fs.existsSync(file) ? fs.readFileSync(file, "utf8").trim() : "";
+    const cur = text ? JSON.parse(text) : {};
     const merge = (a, b) => {
       for (const [k, v] of Object.entries(b)) {
         a[k] = v && typeof v === "object" && !Array.isArray(v) ? merge(a[k] ?? {}, v) : v;
