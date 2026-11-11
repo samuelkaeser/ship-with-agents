@@ -159,10 +159,17 @@ describe('drug with 40% Selbstbehalt', () => {
     expect(html).toContain('CHF 40.00');
   });
 
-  it('the seed person also has a drug with a medical reason: 10% and a note, total 350', async () => {
+  it('shows how much of the 40% drug counted toward the cap, and the seed crosses the cap', async () => {
+    const html = await textOf(await freshApp().request('/persons/lena-original?year=2026'));
+    expect(html).toContain('an die Obergrenze angerechnet: CHF 25.00');
+    expect(html).toContain('an die Obergrenze angerechnet: CHF 665.00');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 1'414\.00/);
+    expect(html).toContain('Obergrenze: CHF 0.00');
+  });
+
+  it('the seed person also has a drug with a medical reason: 10% and a note, 10%', async () => {
     const html = await textOf(await freshApp().request('/persons/lena-original?year=2026'));
     expect(html).toContain('Medikament, Selbstbehalt 10% (medizinischer Grund)');
-    expect(html).toMatch(/data-testid="patient-total">\s*CHF 350\.00/);
   });
 
   it('a posted drug invoice with the medical reason checkbox is charged 10%: 300 + 70', async () => {

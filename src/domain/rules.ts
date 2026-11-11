@@ -16,6 +16,14 @@ export function selbstbehaltPercent(invoice: Invoice): number {
 export const SELBSTBEHALT_CAP_ADULT = francs(700);
 export const SELBSTBEHALT_CAP_CHILD = francs(350);
 
+/**
+ * Percentage of the base that counts toward the yearly cap: 10 points plus half of the points above
+ * 10% (KVV Art. 104a Abs. 2). 10% counts 10%, 40% counts 25%.
+ */
+export function capCountPercent(selbstbehaltPercent: number): number {
+  return SELBSTBEHALT_PERCENT + (selbstbehaltPercent - SELBSTBEHALT_PERCENT) / 2;
+}
+
 export function yearOf(date: IsoDate): number {
   return Number(date.slice(0, 4));
 }

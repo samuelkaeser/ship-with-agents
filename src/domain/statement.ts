@@ -1,11 +1,13 @@
 import { ZERO, add, francs, min, percentRoundHalfUp, sub, type Rappen } from './money';
-import { selbstbehaltCap, selbstbehaltPercent, yearOf } from './rules';
+import { capCountPercent, selbstbehaltCap, selbstbehaltPercent, yearOf } from './rules';
 import type { InsuredPerson, Invoice } from './types';
 
 export interface StatementLine {
   invoice: Invoice;
   franchisePart: Rappen;
   selbstbehaltPart: Rappen;
+  /** What this invoice used up of the yearly cap (less than selbstbehaltPart for a 40% drug). */
+  capCounted: Rappen;
   patientShare: Rappen;
   insurerShare: Rappen;
 }
@@ -32,6 +34,7 @@ export interface Statement {
  * - Franchise first (KVG Art. 64 Abs. 2 lit. a), then 10% Selbstbehalt on the rest
  *   (KVG Art. 64 Abs. 2 lit. b; 40% for a marked drug, KLV Art. 38a Abs. 1),
  *   capped per year (KVV Art. 103 Abs. 2).
+ * - A 40% drug counts only 25% of its base toward the cap (KVV Art. 104a Abs. 2).
  * - The Selbstbehalt is rounded half up to the whole Rappen per invoice.
  */
 export function computeStatement(
@@ -57,17 +60,24 @@ export function computeStatement(
 
   for (const invoice of inYear) {
     const franchisePart = min(invoice.amount, franchiseLeft);
-    const selbstbehaltPart = min(
-      percentRoundHalfUp(sub(invoice.amount, franchisePart), selbstbehaltPercent(invoice)),
-      capLeft,
-    );
+    const base = sub(invoice.amount, franchisePart);
+    const percent = selbstbehaltPercent(invoice);
+    const countPercent = capCountPercent(percent);
+    const capCounted = min(percentRoundHalfUp(base, countPercent), capLeft);
+    // KVV Art. 104a Abs. 2: the patient pays the full percentage, only part of it counts toward the cap.
+    // If the cap runs out inside this invoice, the patient pays in the same proportion (our reading).
+    const selbstbehaltPart =
+      capCounted === percentRoundHalfUp(base, countPercent)
+        ? percentRoundHalfUp(base, percent)
+        : percentRoundHalfUp(capCounted, (percent * 100) / countPercent);
     franchiseLeft = sub(franchiseLeft, franchisePart);
-    capLeft = sub(capLeft, selbstbehaltPart);
+    capLeft = sub(capLeft, capCounted);
     const patientShare = add(franchisePart, selbstbehaltPart);
     lines.push({
       invoice,
       franchisePart,
       selbstbehaltPart,
+      capCounted,
       patientShare,
       insurerShare: sub(invoice.amount, patientShare),
     });

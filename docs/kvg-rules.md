@@ -32,12 +32,13 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 
 ## 4. Rules behind the workshop features
 
-### Medikamente with 40% Selbstbehalt **[not yet]**
+### Medikamente with 40% Selbstbehalt **[implemented]**
 
 15. **[implemented in part]** The clerk marks an invoice as a differentiated drug, the app then charges 40%. The app does not check the price comparison itself (no drug catalogue). Differentiated Selbstbehalt for drugs: 40% instead of 10% when the factory price is at least 10% above the average of the cheapest third of all drugs on the Spezialitätenliste with the same active ingredient (KLV Art. 38a Abs. 1). Applies to originals, generics, co-marketing, reference drugs and biosimilars (Abs. 2).
 16. **[implemented]** The clerk ticks "medical reason" on the invoice (who stated it is not recorded). The 40% does not apply if the doctor expressly prescribes the original for medical reasons, or the pharmacist documents a medical reason against substitution (KLV Art. 38a Abs. 7).
-17. A drug cost counted at more than 10% only counts half of the excess toward the cap. At 40%, that is 30 points above the legal rate, so 15 points count toward the CHF 700 cap: 10 + 15 = 25% of the drug cost counts. The patient still pays the full 40% (KVV Art. 104a Abs. 2).
+17. **[implemented]** A drug cost counted at more than 10% only counts half of the excess toward the cap. At 40%, that is 30 points above the legal rate, so 15 points count toward the CHF 700 cap: 10 + 15 = 25% of the drug cost counts. The patient still pays the full 40% (KVV Art. 104a Abs. 2).
     Example: Franchise already met, original drug CHF 100, generic exists, no medical reason. Patient pays 40, counted toward the cap: 25. With a medical reason: patient pays 10, counted 10.
+    If the cap runs out inside one 40% invoice, the app counts what is left and the patient pays in the same proportion (counted x 40 / 25). The law has no rule for this, it is our choice. The app only has a marker, no price comparison (rule 15).
 
 ### Spitalbeitrag **[not yet]**
 
@@ -69,7 +70,7 @@ Numbers are from the research file. Single persons only. Each example is tagged 
 - **D. [not yet] (feature Spitalbeitrag)** Hospital: adult whose Franchise is already used up and who has paid no Selbstbehalt yet (the full cap room of CHF 700 is left); admitted Monday, discharged Saturday. Billable days Monday to Friday = 5 (discharge day free): 5 x 15 = 75. Insurer's share of the stay CHF 6,000: Selbstbehalt 600 (under the remaining cap). Patient pays 675. Assumption: the Selbstbehalt runs on the insurer's share (unverified).
 - **E. [implemented]** Year boundary: adult, CHF 400 treatment on 20.12.2026, CHF 400 treatment on 8.1.2027, both invoiced 15.1.2027. December visit belongs to 2026: 300 + 10 = 310. January visit belongs to 2027 with a fresh Franchise: 300 + 10 = 310. Total 620, not the 350 you get by invoice date.
 - **F. [not yet] (feature Mutterschaft)** Woman in week 14, CHF 300 check-up and CHF 200 flu visit, 5 days hospital for the birth. All cost sharing 0, Spitalbeitrag 0. The same CHF 200 flu visit in week 10 is normal cost sharing.
-- **G. [not yet] (feature Medikamente with 40% Selbstbehalt)** Franchise already met, original drug CHF 100, generic exists, no medical reason: patient pays 40, counted toward the cap 10 + 15 = 25. With a medical reason: patient pays 10.
+- **G. [implemented]** Franchise already met, original drug CHF 100, generic exists, no medical reason: patient pays 40, counted toward the cap 10 + 15 = 25. With a medical reason: patient pays 10.
 
 ## 6. Out of scope
 

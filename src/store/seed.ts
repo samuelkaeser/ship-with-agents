@@ -73,4 +73,14 @@ export const seedInvoices: Invoice[] = [
     true,
     true,
   ),
+  // Lena's big drug crosses the cap: it would count 750, only 665 are left, so she pays 1,064 instead of 1,200
+  inv(
+    'i14',
+    'lena-original',
+    '2026-08-24',
+    '2026-09-02',
+    francs(3000),
+    'Original-Medikament, Dauertherapie',
+    true,
+  ),
 ];

@@ -1,7 +1,12 @@
 import { raw } from 'hono/html';
 import type { PropsWithChildren } from 'hono/jsx';
 import { formatChf, francs } from '../domain/money';
-import { isChild, selbstbehaltCap } from '../domain/rules';
+import {
+  SELBSTBEHALT_PERCENT,
+  isChild,
+  selbstbehaltCap,
+  selbstbehaltPercent,
+} from '../domain/rules';
 import type { Statement } from '../domain/statement';
 import type { InsuredPerson, Invoice } from '../domain/types';
 
@@ -192,7 +197,11 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
                 {drugNote(line.invoice) && (
                   <>
                     <br />
-                    <small>{drugNote(line.invoice)}</small>
+                    <small>
+                      {drugNote(line.invoice)}
+                      {selbstbehaltPercent(line.invoice) > SELBSTBEHALT_PERCENT &&
+                        `, an die Obergrenze angerechnet: ${formatChf(line.capCounted)}`}
+                    </small>
                   </>
                 )}
               </td>

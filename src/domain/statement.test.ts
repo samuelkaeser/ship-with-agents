@@ -18,6 +18,7 @@ const invoice = (
 ): Invoice => ({ id, personId: 'p', treatmentDate, invoiceDate, amount, description: 'Test' });
 
 const adult = person('1985-05-05');
+const child0 = person('1985-05-05', 0);
 
 describe('worked example A: adult, CHF 5,000 outpatient bill', () => {
   it('pays 300 Franchise + 470 Selbstbehalt = 770, insurer pays 4,230', () => {
@@ -273,6 +274,59 @@ describe('worked example G: drug with 40% Selbstbehalt', () => {
       2026,
     );
     expect(lines[1]?.selbstbehaltPart).toBe(francs(10));
+  });
+
+  it('counts only 25% toward the cap: patient pays 40, counted 25, cap left 675', () => {
+    const { lines, capLeft } = computeStatement(adult, [franchiseMet, drug(francs(100))], 2026);
+    expect(lines[1]?.capCounted).toBe(francs(25));
+    expect(capLeft).toBe(francs(675));
+  });
+
+  it('with a medical reason the full 10% counts: patient pays 10, counted 10', () => {
+    const { lines } = computeStatement(
+      adult,
+      [franchiseMet, { ...drug(francs(100)), medicalReason: true }],
+      2026,
+    );
+    expect(lines[1]).toMatchObject({ selbstbehaltPart: francs(10), capCounted: francs(10) });
+  });
+
+  it('an unmarked invoice counts its full Selbstbehalt toward the cap, as before', () => {
+    const { lines } = computeStatement(adult, [invoice('a', '2026-01-10', francs(5000))], 2026);
+    expect(lines[0]?.capCounted).toBe(francs(470));
+  });
+
+  it('cap reached inside a 40% invoice: 665 of the cap left, CHF 3,000 drug, patient pays 1,064', () => {
+    const invoices = [
+      franchiseMet,
+      drug(francs(100)), // pays 40, counts 25
+      { ...invoice('c', '2026-03-10', francs(100)), differentiatedDrug: true, medicalReason: true }, // pays 10, counts 10
+      { ...drug(francs(3000)), id: 'd', treatmentDate: '2026-04-10' }, // would count 750
+    ];
+    const { lines, capLeft } = computeStatement(adult, invoices, 2026);
+    expect(lines[3]).toMatchObject({ capCounted: francs(665), selbstbehaltPart: francs(1064) });
+    expect(capLeft).toBe(francs(0));
+  });
+
+  it('after the cap is reached a further 40% invoice costs nothing', () => {
+    const invoices = [
+      franchiseMet,
+      drug(francs(7000)),
+      { ...drug(francs(500)), id: 'c', treatmentDate: '2026-05-10' },
+    ];
+    const { lines } = computeStatement(adult, invoices, 2026);
+    expect(lines[2]).toMatchObject({ selbstbehaltPart: francs(0), capCounted: francs(0) });
+  });
+
+  it('child cap CHF 350 works the same way: CHF 2,000 drug counts 350 and costs 560', () => {
+    const child = person('2015-01-01', 0);
+    const { lines } = computeStatement(child, [drug(francs(2000))], 2026);
+    expect(lines[0]).toMatchObject({ capCounted: francs(350), selbstbehaltPart: francs(560) });
+  });
+
+  it('rounds each figure half up on its own: base CHF 10.02 pays 4.01 and counts 2.51', () => {
+    const { lines } = computeStatement(child0, [drug(rappen(1002))], 2026);
+    expect(lines[0]).toMatchObject({ selbstbehaltPart: rappen(401), capCounted: rappen(251) });
   });
 
   it('an unmarked invoice of the same amount is still charged 10%', () => {
