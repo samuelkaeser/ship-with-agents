@@ -19,8 +19,8 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 ## 2. Selbstbehalt and cap
 
 7. **[implemented]** Selbstbehalt is 10% of the costs above the Franchise (KVG Art. 64 Abs. 2 lit. b).
-8. **[implemented]** Yearly cap: CHF 700 for adults, CHF 350 for children (KVV Art. 103 Abs. 2). Same cap with a selectable Franchise (KVV Art. 93 Abs. 2).
-9. **[implemented]** An adult with the ordinary Franchise pays at most 300 + 700 = CHF 1,000. The cap is reached at costs of CHF 7,300.
+8. **[implemented]** Yearly cap: CHF 700 for adults, CHF 350 for children (KVV Art. 103 Abs. 2). Same cap with a selectable Franchise (KVV Art. 93 Abs. 2). Exception: for drugs with 40% Selbstbehalt only the counted part is capped (rule 17), so the amount paid can exceed the cap.
+9. **[implemented]** An adult with the ordinary Franchise pays at most 300 + 700 = CHF 1,000. The cap is reached at costs of CHF 7,300. Exception: with a 40% drug only the counted part is capped, so the total can exceed 1,000 (rule 17).
 10. **[implemented]** Rounding: the Selbstbehalt is rounded half up to the whole Rappen, per invoice. The law has no rounding rule, this is our choice.
 
 ## 3. Which year, which order
@@ -32,7 +32,7 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 
 ## 4. Rules behind the workshop features
 
-### Medikamente with 40% Selbstbehalt **[implemented]**
+### Medikamente with 40% Selbstbehalt **[implemented in part]**
 
 15. **[implemented in part]** The clerk marks an invoice as a differentiated drug, the app then charges 40%. The app does not check the price comparison itself (no drug catalogue). Differentiated Selbstbehalt for drugs: 40% instead of 10% when the factory price is at least 10% above the average of the cheapest third of all drugs on the Spezialitätenliste with the same active ingredient (KLV Art. 38a Abs. 1). Applies to originals, generics, co-marketing, reference drugs and biosimilars (Abs. 2).
 16. **[implemented]** The clerk ticks "medical reason" on the invoice (who stated it is not recorded). The 40% does not apply if the doctor expressly prescribes the original for medical reasons, or the pharmacist documents a medical reason against substitution (KLV Art. 38a Abs. 7).

@@ -19,18 +19,7 @@ const inv = (
   invoiceDate: string,
   amount: Rappen,
   description: string,
-  differentiatedDrug = false,
-  medicalReason = false,
-): Invoice => ({
-  id,
-  personId,
-  treatmentDate,
-  invoiceDate,
-  amount,
-  description,
-  differentiatedDrug,
-  medicalReason,
-});
+): Invoice => ({ id, personId, treatmentDate, invoiceDate, amount, description });
 
 export const seedInvoices: Invoice[] = [
   // Erika: one ordinary outpatient bill (CHF 5,000, she pays 770)
@@ -62,25 +51,25 @@ export const seedInvoices: Invoice[] = [
 
   // Lena: Franchise used up by a visit, then an original drug (40%), then one with a medical reason (10%)
   inv('i11', 'lena-original', '2026-02-09', '2026-02-20', francs(300), 'Hausarzt, Abklärung'),
-  inv('i12', 'lena-original', '2026-03-16', '2026-03-25', francs(100), 'Original-Medikament', true),
-  inv(
-    'i13',
-    'lena-original',
-    '2026-05-04',
-    '2026-05-12',
-    francs(100),
-    'Original-Medikament',
-    true,
-    true,
-  ),
+  {
+    ...inv('i12', 'lena-original', '2026-03-16', '2026-03-25', francs(100), 'Original-Medikament'),
+    differentiatedDrug: true,
+  },
+  {
+    ...inv('i13', 'lena-original', '2026-05-04', '2026-05-12', francs(100), 'Original-Medikament'),
+    differentiatedDrug: true,
+    medicalReason: true,
+  },
   // Lena's big drug crosses the cap: it would count 750, only 665 are left, so she pays 1,064 instead of 1,200
-  inv(
-    'i14',
-    'lena-original',
-    '2026-08-24',
-    '2026-09-02',
-    francs(3000),
-    'Original-Medikament, Dauertherapie',
-    true,
-  ),
+  {
+    ...inv(
+      'i14',
+      'lena-original',
+      '2026-08-24',
+      '2026-09-02',
+      francs(3000),
+      'Original-Medikament, Dauertherapie',
+    ),
+    differentiatedDrug: true,
+  },
 ];
