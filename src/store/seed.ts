@@ -20,6 +20,7 @@ const inv = (
   amount: Rappen,
   description: string,
   differentiatedDrug = false,
+  medicalReason = false,
 ): Invoice => ({
   id,
   personId,
@@ -28,6 +29,7 @@ const inv = (
   amount,
   description,
   differentiatedDrug,
+  medicalReason,
 });
 
 export const seedInvoices: Invoice[] = [
@@ -58,7 +60,17 @@ export const seedInvoices: Invoice[] = [
   ),
   inv('i10', 'peter-sparfuchs', '2026-10-15', '2026-10-30', francs(600), 'Kontrolle'),
 
-  // Lena: Franchise used up by a visit, then an original drug with a cheaper generic (40%)
+  // Lena: Franchise used up by a visit, then an original drug (40%), then one with a medical reason (10%)
   inv('i11', 'lena-original', '2026-02-09', '2026-02-20', francs(300), 'Hausarzt, Abklärung'),
   inv('i12', 'lena-original', '2026-03-16', '2026-03-25', francs(100), 'Original-Medikament', true),
+  inv(
+    'i13',
+    'lena-original',
+    '2026-05-04',
+    '2026-05-12',
+    francs(100),
+    'Original-Medikament',
+    true,
+    true,
+  ),
 ];

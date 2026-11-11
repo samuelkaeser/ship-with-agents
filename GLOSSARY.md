@@ -43,6 +43,10 @@ _Avoid_: Co-insurance, coinsurance
 An invoice the clerk marks as a drug with a cheaper alternative of the same active ingredient. Its Selbstbehalt is 40% instead of 10%. The app does not compare prices, the clerk decides.
 _Avoid_: Expensive drug, original drug
 
+**Medical reason**:
+A tick on a differentiated drug invoice: the doctor prescribed the original for medical reasons, or the pharmacist documented one against substitution. The Selbstbehalt is then the normal 10%.
+_Avoid_: Exemption, waiver
+
 **Cap**:
 The highest Selbstbehalt one person pays per calendar year: CHF 700 for adults, CHF 350 for children.
 _Avoid_: Limit, maximum, ceiling

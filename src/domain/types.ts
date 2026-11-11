@@ -21,4 +21,6 @@ export interface Invoice {
   description: string;
   /** A drug charged 40% Selbstbehalt instead of 10% (KLV Art. 38a Abs. 1). Set by the clerk. */
   differentiatedDrug?: boolean;
+  /** Doctor or pharmacist stated a medical reason: the normal 10% applies (KLV Art. 38a Abs. 7). */
+  medicalReason?: boolean;
 }

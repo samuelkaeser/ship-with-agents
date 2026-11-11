@@ -64,6 +64,7 @@ export function createApp(store: Store) {
       amount,
       description: text('description'),
       differentiatedDrug: form.differentiatedDrug === 'on',
+      medicalReason: form.medicalReason === 'on',
     });
     return c.redirect(`/persons/${person.id}?year=${yearOf(text('treatmentDate'))}`, 303);
   });

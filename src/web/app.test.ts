@@ -153,10 +153,30 @@ describe('GET /persons/:id?year=', () => {
 });
 
 describe('drug with 40% Selbstbehalt', () => {
-  it('shows the seed person Lena Original: CHF 300 visit, then a CHF 100 original drug, patient pays 340', async () => {
+  it('shows the seed person Lena Original: CHF 300 visit, then a CHF 100 original drug, 40% Selbstbehalt', async () => {
     const html = await textOf(await freshApp().request('/persons/lena-original?year=2026'));
     expect(html).toContain('Medikament mit 40% Selbstbehalt');
-    expect(html).toMatch(/data-testid="patient-total">\s*CHF 340\.00/);
+    expect(html).toContain('CHF 40.00');
+  });
+
+  it('the seed person also has a drug with a medical reason: 10% and a note, total 350', async () => {
+    const html = await textOf(await freshApp().request('/persons/lena-original?year=2026'));
+    expect(html).toContain('Medikament, Selbstbehalt 10% (medizinischer Grund)');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 350\.00/);
+  });
+
+  it('a posted drug invoice with the medical reason checkbox is charged 10%: 300 + 70', async () => {
+    const app = freshApp();
+    await post(app, '/persons/max-muster/invoices', {
+      treatmentDate: '2027-02-01',
+      invoiceDate: '2027-02-05',
+      amount: '1000',
+      description: 'Original',
+      differentiatedDrug: 'on',
+      medicalReason: 'on',
+    });
+    const html = await textOf(await app.request('/persons/max-muster?year=2027'));
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 370\.00/);
   });
 
   it('a posted invoice with the checkbox is charged 40%: CHF 1,000 = 300 Franchise + 280', async () => {

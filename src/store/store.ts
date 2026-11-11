@@ -9,6 +9,7 @@ export interface NewInvoice {
   amount: Rappen;
   description: string;
   differentiatedDrug?: boolean;
+  medicalReason?: boolean;
 }
 
 export interface Store {

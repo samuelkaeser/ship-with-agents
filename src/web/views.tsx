@@ -45,8 +45,12 @@ export function Layout({ title, children }: PropsWithChildren<{ title: string }>
   );
 }
 
-const drugNote = (invoice: Invoice) =>
-  invoice.differentiatedDrug ? 'Medikament mit 40% Selbstbehalt' : undefined;
+const drugNote = (invoice: Invoice) => {
+  if (!invoice.differentiatedDrug) return undefined;
+  return invoice.medicalReason
+    ? 'Medikament, Selbstbehalt 10% (medizinischer Grund)'
+    : 'Medikament mit 40% Selbstbehalt';
+};
 
 export function PersonList({ persons }: { persons: InsuredPerson[] }) {
   return (
@@ -144,6 +148,12 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
         <label>
           <span>
             <input type="checkbox" name="differentiatedDrug" /> Medikament mit 40% Selbstbehalt
+          </span>
+        </label>
+        <label>
+          <span>
+            <input type="checkbox" name="medicalReason" /> Medizinischer Grund (Original ärztlich
+            verordnet)
           </span>
         </label>
         <button type="submit">Rechnung speichern</button>

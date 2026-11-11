@@ -257,6 +257,24 @@ describe('worked example G: drug with 40% Selbstbehalt', () => {
     expect(lines[0]).toMatchObject({ franchisePart: francs(300), selbstbehaltPart: francs(40) });
   });
 
+  it('with a medical reason the normal 10% applies: patient pays 10', () => {
+    const { lines } = computeStatement(
+      adult,
+      [franchiseMet, { ...drug(francs(100)), medicalReason: true }],
+      2026,
+    );
+    expect(lines[1]).toMatchObject({ selbstbehaltPart: francs(10), patientShare: francs(10) });
+  });
+
+  it('a medical reason on an unmarked invoice changes nothing: still 10%', () => {
+    const { lines } = computeStatement(
+      adult,
+      [franchiseMet, { ...invoice('b', '2026-02-10', francs(100)), medicalReason: true }],
+      2026,
+    );
+    expect(lines[1]?.selbstbehaltPart).toBe(francs(10));
+  });
+
   it('an unmarked invoice of the same amount is still charged 10%', () => {
     const { lines } = computeStatement(
       adult,
