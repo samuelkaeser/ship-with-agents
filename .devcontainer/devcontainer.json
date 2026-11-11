@@ -3,6 +3,7 @@
   "build": { "dockerfile": "Dockerfile" },
   "remoteUser": "node",
   "hostRequirements": { "cpus": 4 },
+  "forwardPorts": [3000],
   "containerEnv": {
     "ANTHROPIC_MODEL": "claude-sonnet-5-5",
     "CLAUDE_CODE_RETRY_WATCHDOG": "1",
