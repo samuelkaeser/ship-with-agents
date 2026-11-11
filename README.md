@@ -32,7 +32,7 @@ Beim Commit laufen Prettier, Typenprüfung und Tests automatisch. Schlägt etwas
 
 ## Der Ablauf des Abends
 
-Ihr arbeitet zu zweit an einer Feature-Karte. Jeder Schritt ist ein Befehl in Claude Code:
+Ihr arbeitet zu zweit an einer Feature-Karte. Fast jeder Schritt ist ein Befehl in Claude Code:
 
 1. Im Terminal (nicht in Claude) einen Branch anlegen: `git switch -c feature/<name>`. Ohne Branch hat das Review am Schluss nichts zu vergleichen.
 2. Vor dem Grill, 5 Minuten: Folgt dem Abschnitt "Vor dem Grill" am Ende eurer Feature-Karte. Ihr startet die App, erfasst eine Rechnung und lest die Begriffe nach. So versteht ihr, worüber der Agent euch gleich befragt.
