@@ -22,12 +22,19 @@ export function percentRoundHalfUp(amount: Rappen, percent: number): Rappen {
   return rappen(Math.floor((amount * percent + 50) / 100));
 }
 
-/** Parses user input like "123", "123.5" or "1'234.50" into Rappen. Returns undefined if invalid. */
+const MAX_AMOUNT = francs(10_000_000);
+
+/**
+ * Parses user input like "123", "123.5", "123,5" or "1'234.50" into Rappen.
+ * Returns undefined unless the amount is above 0 and at most CHF 10,000,000.
+ */
 export function parseChf(text: string): Rappen | undefined {
-  const match = /^(\d+)(?:\.(\d{1,2}))?$/.exec(text.trim().replaceAll("'", ''));
+  const match = /^(\d+)(?:[.,](\d{1,2}))?$/.exec(text.trim().replaceAll("'", ''));
   if (!match) return undefined;
   const [, whole = '0', fraction = ''] = match;
-  return rappen(Number(whole) * 100 + Number(fraction.padEnd(2, '0')));
+  const value = Number(whole) * 100 + Number(fraction.padEnd(2, '0'));
+  if (!Number.isSafeInteger(value) || value <= 0 || value > MAX_AMOUNT) return undefined;
+  return rappen(value);
 }
 
 /** The one place that turns Rappen into display text: "CHF 1'234.50". */

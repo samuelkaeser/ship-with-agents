@@ -8,8 +8,17 @@ import { Layout, PersonList, PersonPage } from './views';
 
 const DEFAULT_YEAR = 2026;
 
-const isValidDate = (text: string) =>
-  /^\d{4}-\d{2}-\d{2}$/.test(text) && !Number.isNaN(Date.parse(text));
+// Round trip catches impossible dates: 2026-02-30 becomes 2026-03-02, month 13 is invalid.
+const isValidDate = (text: string) => {
+  const date = new Date(`${text}T00:00:00Z`);
+  return (
+    /^\d{4}-\d{2}-\d{2}$/.test(text) &&
+    !isNaN(date.getTime()) &&
+    date.toISOString().slice(0, 10) === text
+  );
+};
+
+const parseYear = (text = '') => (/^\d{4}$/.test(text) ? Number(text) : undefined);
 
 export function createApp(store: Store) {
   const app = new Hono();
@@ -29,7 +38,7 @@ export function createApp(store: Store) {
   app.get('/persons/:id', (c) => {
     const person = store.getPerson(c.req.param('id'));
     if (!person) return c.notFound();
-    return c.html(renderPerson(person, Number(c.req.query('year'))));
+    return c.html(renderPerson(person, parseYear(c.req.query('year'))));
   });
 
   app.post('/persons/:id/invoices', async (c) => {
@@ -42,8 +51,7 @@ export function createApp(store: Store) {
     const errors: string[] = [];
     if (!isValidDate(text('treatmentDate'))) errors.push('Behandlungsdatum ist ungültig.');
     if (!isValidDate(text('invoiceDate'))) errors.push('Rechnungsdatum ist ungültig.');
-    if (amount === undefined || amount <= 0)
-      errors.push('Betrag muss grösser als 0 sein, z.B. 123.45.');
+    if (amount === undefined) errors.push('Betrag ungültig, z.B. 123.45');
     if (!text('description')) errors.push('Beschreibung fehlt.');
 
     if (errors.length > 0 || amount === undefined) {

@@ -79,8 +79,75 @@ describe('POST /persons/:id/invoices', () => {
       description: 'Kontrolle',
     });
     expect(res.status).toBe(400);
-    expect(await textOf(res)).toContain('Betrag muss grösser als 0 sein');
+    expect(await textOf(res)).toContain('Betrag ungültig, z.B. 123.45');
     const html = await textOf(await app.request('/persons/erika-beispiel?year=2026'));
     expect(html).not.toContain('Kontrolle');
+  });
+
+  it.each(['99999999999999999', '90071992547409', '10000000.01'])(
+    'rejects the huge amount %s with a 400 and the person page still renders',
+    async (amount) => {
+      const app = freshApp();
+      const res = await post(app, '/persons/erika-beispiel/invoices', {
+        treatmentDate: '2026-02-01',
+        invoiceDate: '2026-02-10',
+        amount,
+        description: 'Gross',
+      });
+      expect(res.status).toBe(400);
+      expect(await textOf(res)).toContain('Betrag ungültig, z.B. 123.45');
+      const page = await app.request('/persons/erika-beispiel?year=2026');
+      expect(page.status).toBe(200);
+      expect(await textOf(page)).not.toContain('Gross');
+    },
+  );
+
+  it('accepts a comma as decimal separator: 12,50', async () => {
+    const app = freshApp();
+    const res = await post(app, '/persons/erika-beispiel/invoices', {
+      treatmentDate: '2027-02-01',
+      invoiceDate: '2027-02-10',
+      amount: '12,50',
+      description: 'Komma',
+    });
+    expect(res.status).toBe(303);
+    expect(await textOf(await app.request('/persons/erika-beispiel?year=2027'))).toContain(
+      'CHF 12.50',
+    );
+  });
+
+  it.each(['2026-02-30', '2026-13-01', '2026-2-1', '2026-02-10x'])(
+    'rejects the impossible or malformed date %s',
+    async (date) => {
+      const res = await post(freshApp(), '/persons/erika-beispiel/invoices', {
+        treatmentDate: date,
+        invoiceDate: '2026-02-10',
+        amount: '10',
+        description: 'Datum',
+      });
+      expect(res.status).toBe(400);
+      expect(await textOf(res)).toContain('Behandlungsdatum ist ungültig');
+    },
+  );
+
+  it('escapes HTML in the description', async () => {
+    const app = freshApp();
+    await post(app, '/persons/erika-beispiel/invoices', {
+      treatmentDate: '2027-02-01',
+      invoiceDate: '2027-02-10',
+      amount: '10',
+      description: '<script>alert(1)</script>',
+    });
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+    expect(html).not.toContain('<script>alert(1)</script>');
+    expect(html).toContain('&lt;script&gt;');
+  });
+});
+
+describe('GET /persons/:id?year=', () => {
+  it.each(['abc', '-5', '2026.5', '20266'])('renders without a 500 for year=%s', async (year) => {
+    const res = await freshApp().request(`/persons/erika-beispiel?year=${year}`);
+    expect(res.status).toBe(200);
+    expect(await textOf(res)).toContain('Erika Beispiel');
   });
 });

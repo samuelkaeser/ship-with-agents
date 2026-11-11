@@ -17,8 +17,20 @@ describe('money', () => {
     expect(parseChf('123.5')).toBe(rappen(12350));
     expect(parseChf("1'234.05")).toBe(rappen(123405));
     expect(parseChf('abc')).toBeUndefined();
-    expect(parseChf('1.234')).toBeUndefined();
-    expect(parseChf('-5')).toBeUndefined();
+  });
+
+  it('accepts comma or dot as decimal separator and the apostrophe as thousands separator', () => {
+    expect(parseChf('12,50')).toBe(rappen(1250));
+    expect(parseChf('12.5')).toBe(rappen(1250));
+    expect(parseChf("1'000.00")).toBe(rappen(100000));
+    expect(parseChf('19.99')).toBe(rappen(1999));
+  });
+
+  it('rejects anything that is not a positive amount of at most CHF 10,000,000', () => {
+    for (const text of ['1.005', '-5', '1e3', '0', '', '10000000.01', '99999999999999999']) {
+      expect(parseChf(text), text).toBeUndefined();
+    }
+    expect(parseChf('10000000')).toBe(francs(10_000_000));
   });
 
   it('computes percentages rounded half up', () => {

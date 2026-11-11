@@ -7,7 +7,7 @@ A fictional Swiss health insurer's tool. It works out how much of an invoice the
 
 **Insured person**:
 One person insured with the insurer, with a name, a date of birth and a chosen Franchise. Persons are single, there are no households.
-_Avoid_: Customer, patient, member, client
+_Avoid_: Customer, member, client
 
 **Invoice**:
 A provider's bill for one treatment of one insured person, with one amount and no line items.
@@ -42,6 +42,10 @@ _Avoid_: Co-insurance, coinsurance
 **Cap**:
 The highest Selbstbehalt one person pays per calendar year: CHF 700 for adults, CHF 350 for children.
 _Avoid_: Limit, maximum, ceiling
+
+**Patient share**:
+The amount the insured person pays on an invoice: Franchise part plus Selbstbehalt part. The insurer share is the rest.
+_Avoid_: Co-pay, out-of-pocket
 
 **Yearly statement**:
 The result for one insured person and one calendar year: per invoice the patient share (Franchise part and Selbstbehalt part) and the insurer share, plus yearly totals and what is left of Franchise and cap.

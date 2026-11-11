@@ -92,6 +92,23 @@ describe('worked example B: the Selbstbehalt cap', () => {
   });
 });
 
+describe('cap reached in the middle of one invoice', () => {
+  it('CHF 5,000 then CHF 3,000: the second invoice only gets the remaining 230 of the cap', () => {
+    const { lines, totals, capLeft } = computeStatement(
+      adult,
+      [invoice('a', '2026-02-01', francs(5000)), invoice('b', '2026-06-01', francs(3000))],
+      2026,
+    );
+    expect(lines[1]).toMatchObject({
+      selbstbehaltPart: francs(230), // 10% would be 300
+      patientShare: francs(230),
+      insurerShare: francs(2770),
+    });
+    expect(totals.patientShare).toBe(francs(1000));
+    expect(capLeft).toBe(francs(0));
+  });
+});
+
 describe('worked example C: child', () => {
   it('single child, CHF 5,000: no Franchise, Selbstbehalt capped at 350', () => {
     const child = person('2019-04-01', 0);
@@ -175,6 +192,20 @@ describe('Franchise and ordering', () => {
     expect(lines.map((line) => line.invoice.id)).toEqual(['early', 'late']);
     expect(lines[0]?.franchisePart).toBe(francs(300));
     expect(lines[1]?.franchisePart).toBe(francs(0));
+  });
+
+  it('same treatment date: the earlier invoice date is processed first, then the lower id', () => {
+    const { lines } = computeStatement(
+      adult,
+      [
+        invoice('b', '2026-03-01', francs(300), '2026-03-10'),
+        invoice('c', '2026-03-01', francs(300), '2026-03-05'),
+        invoice('a', '2026-03-01', francs(300), '2026-03-10'),
+      ],
+      2026,
+    );
+    expect(lines.map((line) => line.invoice.id)).toEqual(['c', 'a', 'b']);
+    expect(lines[0]?.franchisePart).toBe(francs(300));
   });
 
   it('ignores invoices of other persons', () => {
