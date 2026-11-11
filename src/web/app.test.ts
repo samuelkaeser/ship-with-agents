@@ -224,6 +224,34 @@ describe('Franchisen-Vergleich on the person page', () => {
     expect(html).not.toContain('gespart');
   });
 
+  it('explains for the child Kim Klein why there is no comparison', async () => {
+    const html = await textOf(await freshApp().request('/persons/kim-klein?year=2026'));
+    expect(html).toContain('Kinder haben keine Franchise-Wahl, darum gibt es keinen Vergleich.');
+  });
+
+  it('says only premiums were compared in a year without invoices (Erika 2025)', async () => {
+    const html = await textOf(await freshApp().request('/persons/erika-beispiel?year=2025'));
+    expect(html).toContain('Keine Rechnungen in 2025: verglichen werden nur die Prämien.');
+    expect(html).toMatch(/CHF 2'500\.00 \(günstigste\)/);
+  });
+
+  it('shows the footnote on fictional premiums and 1 January, and no empty-year note, for Erika 2026', async () => {
+    const html = await textOf(await freshApp().request('/persons/erika-beispiel?year=2026'));
+    expect(html).toContain(
+      'Die Prämien sind fiktiv. Eine höhere Franchise gilt erst ab dem 1. Januar.',
+    );
+    expect(html).not.toContain('Keine Rechnungen in');
+  });
+
+  it('decides child or adult per selected year: born 2008 is a child in 2026, compared in 2027', async () => {
+    const teen = { ...seedPersons[0]!, dateOfBirth: '2008-06-01' };
+    const app = createApp(createStore([teen], []));
+    const y2026 = await textOf(await app.request('/persons/erika-beispiel?year=2026'));
+    const y2027 = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+    expect(y2026).toContain('Kinder haben keine Franchise-Wahl');
+    expect(y2027).toContain('Franchisen-Vergleich 2027');
+  });
+
   it('shows no comparison for the child Kim Klein', async () => {
     const res = await freshApp().request('/persons/kim-klein?year=2026');
     expect(res.status).toBe(200);

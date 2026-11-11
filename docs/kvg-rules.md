@@ -54,13 +54,13 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 23. The doctor states the presumed start of week 13 on the invoice (KVV Art. 105 Abs. 1). A stillbirth after week 23 counts as birth (Abs. 2). The period ends on day 56 after birth at 24:00 (Abs. 3).
     Example: woman in week 14, CHF 300 check-up and CHF 200 flu visit: all cost sharing 0. The same flu visit in week 10 is normal cost sharing.
 
-### Franchisen-Vergleich **[partly implemented]**
+### Franchisen-Vergleich **[implemented]**
 
 24. **[implemented]** The Franchise levels the app knows are in rules 1 to 3. The yearly statement rules (sections 2 and 3) apply unchanged to every level. The comparison counts the yearly cost of a level: 12 fictional monthly premiums plus the Kostenbeteiligung of the normal yearly statement with that Franchise. The cheapest level has the lowest yearly cost, a tie goes to the lower Franchise. Children are not compared (no Franchise choice). Premiums are fictional, the same for every year, and not taken from any law.
 25. Premium discounts for a higher Franchise are set by the insurer. The law only caps them: at most 70% of the extra risk the insured takes on (KVV Art. 95 Abs. 2bis).
 26. **[implemented]** The page shows all four levels side by side with premium, Kostenbeteiligung and yearly cost, the cheapest one marked.
 27. **[implemented]** The difference of each level to the person's current Franchise, and what a switch to the cheapest level would have saved. If the current Franchise ties with the cheapest, the page says it already is the cheapest.
-28. **[not yet]** Explanations for children, years without invoices and the 1 January rule (rule 5).
+28. **[implemented]** The page explains the limits: children get no comparison (rule 2), a year without invoices compares premiums only, and a higher Franchise only starts on 1 January (rule 5, which the app itself still does not enforce because it has no Franchise change).
 
 ## 5. Worked examples
 

@@ -4,10 +4,10 @@
 
 **Blocked by:** 03: Difference to the current Franchise
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Kim Klein, 2026: the children sentence is shown, no table and no cheapest sentence
-- [ ] Erika Beispiel, a year without invoices (for example 2025 via the year parameter): the table still shows, the note names the year, Franchise 2500 is marked cheapest
-- [ ] Erika Beispiel, 2026: the note about missing invoices is not shown, the footnote about fictional premiums and 1 January is shown
-- [ ] Child or adult follows the selected year: a hand-made person born in 2008 gets the children sentence for 2026 and a table for 2027
-- [ ] `pnpm test`, `pnpm typecheck` and `pnpm exec prettier --check .` pass
+- [x] Kim Klein, 2026: the children sentence is shown, no table and no cheapest sentence
+- [x] Erika Beispiel, a year without invoices (for example 2025 via the year parameter): the table still shows, the note names the year, Franchise 2500 is marked cheapest
+- [x] Erika Beispiel, 2026: the note about missing invoices is not shown, the footnote about fictional premiums and 1 January is shown
+- [x] Child or adult follows the selected year: a hand-made person born in 2008 gets the children sentence for 2026 and a table for 2027
+- [x] `pnpm test`, `pnpm typecheck` and `pnpm exec prettier --check .` pass

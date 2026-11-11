@@ -219,6 +219,9 @@ export function PersonPage({
       {cheapest && (
         <>
           <h2>Franchisen-Vergleich {year}</h2>
+          {statement.lines.length === 0 && (
+            <p>Keine Rechnungen in {year}: verglichen werden nur die Prämien.</p>
+          )}
           <p data-testid="franchise-saving">
             {cheapest.differenceToCurrent === 0
               ? 'Die aktuelle Franchise ist bereits die günstigste.'
@@ -249,8 +252,10 @@ export function PersonPage({
               ))}
             </tbody>
           </table>
+          <p>Die Prämien sind fiktiv. Eine höhere Franchise gilt erst ab dem 1. Januar.</p>
         </>
       )}
+      {!cheapest && <p>Kinder haben keine Franchise-Wahl, darum gibt es keinen Vergleich.</p>}
     </Layout>
   );
 }
