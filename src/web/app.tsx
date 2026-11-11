@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { parseChf } from '../domain/money';
+import { cheapestFranchise } from '../domain/franchise-comparison';
 import { computeStatement } from '../domain/statement';
 import { yearOf } from '../domain/rules';
 import type { InsuredPerson } from '../domain/types';
@@ -79,6 +80,7 @@ export function createApp(store: Store) {
         person={person}
         invoices={invoices}
         statement={computeStatement(person, invoices, year)}
+        cheapest={cheapestFranchise(person, invoices, year)}
         years={years}
         errors={errors}
       />

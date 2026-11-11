@@ -1,6 +1,7 @@
 import { raw } from 'hono/html';
 import type { PropsWithChildren } from 'hono/jsx';
 import { formatChf, francs } from '../domain/money';
+import type { FranchiseOption } from '../domain/franchise-comparison';
 import { isChild, selbstbehaltCap } from '../domain/rules';
 import type { Statement } from '../domain/statement';
 import type { InsuredPerson, Invoice } from '../domain/types';
@@ -77,11 +78,19 @@ interface PersonPageProps {
   person: InsuredPerson;
   invoices: Invoice[];
   statement: Statement;
+  cheapest?: FranchiseOption;
   years: number[];
   errors?: string[];
 }
 
-export function PersonPage({ person, invoices, statement, years, errors = [] }: PersonPageProps) {
+export function PersonPage({
+  person,
+  invoices,
+  statement,
+  cheapest,
+  years,
+  errors = [],
+}: PersonPageProps) {
   const { year, totals } = statement;
   return (
     <Layout title={person.name}>
@@ -192,6 +201,13 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
         Franchise übrig: {formatChf(statement.franchiseLeft)}. Selbstbehalt-Spielraum bis zur
         Obergrenze: {formatChf(statement.capLeft)}.
       </p>
+
+      {cheapest && (
+        <p data-testid="cheapest-franchise">
+          Günstigste Franchise {year}: {formatChf(francs(cheapest.franchise))} (Prämie und
+          Kostenbeteiligung zusammen {formatChf(cheapest.total)}).
+        </p>
+      )}
     </Layout>
   );
 }

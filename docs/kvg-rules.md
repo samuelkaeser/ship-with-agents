@@ -54,10 +54,12 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 23. The doctor states the presumed start of week 13 on the invoice (KVV Art. 105 Abs. 1). A stillbirth after week 23 counts as birth (Abs. 2). The period ends on day 56 after birth at 24:00 (Abs. 3).
     Example: woman in week 14, CHF 300 check-up and CHF 200 flu visit: all cost sharing 0. The same flu visit in week 10 is normal cost sharing.
 
-### Franchisen-Vergleich **[not yet]**
+### Franchisen-Vergleich **[partly implemented]**
 
-24. The Franchise levels the app knows are in rules 1 to 3. The yearly statement rules (sections 2 and 3) apply unchanged to every level. How a comparison should treat premiums is open, see `features/franchisen-vergleich.md`.
+24. **[implemented]** The Franchise levels the app knows are in rules 1 to 3. The yearly statement rules (sections 2 and 3) apply unchanged to every level. The comparison counts the yearly cost of a level: 12 fictional monthly premiums plus the Kostenbeteiligung of the normal yearly statement with that Franchise. The cheapest level has the lowest yearly cost, a tie goes to the lower Franchise. Children are not compared (no Franchise choice). Premiums are fictional, the same for every year, and not taken from any law.
 25. Premium discounts for a higher Franchise are set by the insurer. The law only caps them: at most 70% of the extra risk the insured takes on (KVV Art. 95 Abs. 2bis).
+26. **[not yet]** All four levels side by side with the difference to the current Franchise.
+27. **[not yet]** Explanations for children, years without invoices and the 1 January rule (rule 5).
 
 ## 5. Worked examples
 
@@ -70,6 +72,7 @@ Numbers are from the research file. Single persons only. Each example is tagged 
 - **E. [implemented]** Year boundary: adult, CHF 400 treatment on 20.12.2026, CHF 400 treatment on 8.1.2027, both invoiced 15.1.2027. December visit belongs to 2026: 300 + 10 = 310. January visit belongs to 2027 with a fresh Franchise: 300 + 10 = 310. Total 620, not the 350 you get by invoice date.
 - **F. [not yet] (feature Mutterschaft)** Woman in week 14, CHF 300 check-up and CHF 200 flu visit, 5 days hospital for the birth. All cost sharing 0, Spitalbeitrag 0. The same CHF 200 flu visit in week 10 is normal cost sharing.
 - **G. [not yet] (feature Medikamente with 40% Selbstbehalt)** Franchise already met, original drug CHF 100, generic exists, no medical reason: patient pays 40, counted toward the cap 10 + 15 = 25. With a medical reason: patient pays 10.
+- **H. [implemented] (feature Franchisen-Vergleich)** Erika Beispiel, 2026, one CHF 5,000 invoice. Premium plus Kostenbeteiligung: 300 gives 5,040 + 770 = 5,810; 500 gives 4,740 + 950 = 5,690; 1500 gives 4,020 + 1,850 = 5,870; 2500 gives 3,600 + 2,750 = 6,350. The cheapest is 500. A year without invoices costs premiums only, so 2500 wins with 3,600.
 
 ## 6. Out of scope
 

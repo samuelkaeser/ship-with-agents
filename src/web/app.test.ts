@@ -151,3 +151,28 @@ describe('GET /persons/:id?year=', () => {
     expect(await textOf(res)).toContain('Erika Beispiel');
   });
 });
+
+describe('Franchisen-Vergleich on the person page', () => {
+  const cheapest = (year: number, franchise: number) =>
+    new RegExp(
+      `data-testid="cheapest-franchise">\\s*Günstigste Franchise ${year}: CHF ${franchise}\\.00`,
+    );
+
+  it('names the cheapest Franchise for Erika 2026: 500, CHF 5,690 in total', async () => {
+    const html = await textOf(await freshApp().request('/persons/erika-beispiel?year=2026'));
+    expect(html).toMatch(cheapest(2026, 500));
+    expect(html).toContain("CHF 5'690.00");
+  });
+
+  it('names the cheapest Franchise for Max Muster 2026 (cap reached): 500, CHF 5,940', async () => {
+    const html = await textOf(await freshApp().request('/persons/max-muster?year=2026'));
+    expect(html).toMatch(cheapest(2026, 500));
+    expect(html).toContain("CHF 5'940.00");
+  });
+
+  it('shows no comparison for the child Kim Klein', async () => {
+    const res = await freshApp().request('/persons/kim-klein?year=2026');
+    expect(res.status).toBe(200);
+    expect(await textOf(res)).not.toContain('Günstigste Franchise');
+  });
+});

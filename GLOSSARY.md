@@ -51,6 +51,14 @@ _Avoid_: Co-pay, out-of-pocket
 The result for one insured person and one calendar year: per invoice the patient share (Franchise part and Selbstbehalt part) and the insurer share, plus yearly totals and what is left of Franchise and cap.
 _Avoid_: Report, summary, bill
 
+**Monthly premium**:
+What the insured person pays per month for the insurance itself, set by the Franchise level. In this app the premiums are a fictional table for adults, the same in every year.
+_Avoid_: Fee, contribution
+
+**Yearly cost**:
+12 monthly premiums plus the Kostenbeteiligung of the calendar year. The Franchise comparison ranks the Franchise levels by it.
+_Avoid_: Total cost, annual price
+
 ### People
 
 **Child** and **Adult**:
