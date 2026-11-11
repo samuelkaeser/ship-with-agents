@@ -35,11 +35,12 @@ Beim Commit laufen Prettier, Typenprüfung und Tests automatisch. Schlägt etwas
 Ihr arbeitet zu zweit an einer Feature-Karte. Jeder Schritt ist ein Befehl in Claude Code:
 
 1. Im Terminal (nicht in Claude) einen Branch anlegen: `git switch -c feature/<name>`. Ohne Branch hat das Review am Schluss nichts zu vergleichen.
-2. `/grill-with-docs`: Der Agent befragt euch zur Karte, bis alle offenen Punkte geklärt sind. Antworten kommen von euch, Wissen zu den Regeln steht in `docs/kvg-rules.md`.
-3. `/to-spec`: Aus dem Gespräch wird eine Spec in `.scratch/<feature>/spec.md`.
-4. `/to-tickets`: Die Spec wird in kleine Tickets zerlegt, eines pro Datei in `.scratch/<feature>/issues/`.
-5. `/implement`: Der Agent setzt ein Ticket um, Test zuerst, dann Code.
-6. `/clear`, dann `/code-review main`: Ein frischer Agent prüft den ganzen Branch gegen die Regeln und die Spec. Nehmt den Eintrag mit `(project)`, nicht `/review`.
+2. Vor dem Grill, 5 Minuten: Folgt dem Abschnitt "Vor dem Grill" am Ende eurer Feature-Karte. Ihr startet die App, erfasst eine Rechnung und lest die Begriffe nach. So versteht ihr, worüber der Agent euch gleich befragt.
+3. `/grill-with-docs`: Der Agent befragt euch zur Karte, bis alle offenen Punkte geklärt sind. Antworten kommen von euch, Wissen zu den Regeln steht in `docs/kvg-rules.md`.
+4. `/to-spec`: Aus dem Gespräch wird eine Spec in `.scratch/<feature>/spec.md`.
+5. `/to-tickets`: Die Spec wird in kleine Tickets zerlegt, eines pro Datei in `.scratch/<feature>/issues/`.
+6. `/implement`: Der Agent setzt ein Ticket um, Test zuerst, dann Code. Das dauert. Nutzt die Zeit: Schreibt drei Abnahmefälle (Zahlenbeispiele aus eurer eigenen Spec, z.B. Eingabe und erwarteter Betrag in CHF) in `.scratch/<feature>/abnahme.md`. Ist der Agent fertig, gebt sie in die laufende App ein und prüft, ob das Ergebnis stimmt. Tipp: Öffnet die Testdatei im Editor neben dem Terminal, statt dem Log zuzusehen.
+7. `/clear`, dann `/code-review main`: Ein frischer Agent prüft den ganzen Branch gegen die Regeln und die Spec. Nehmt den Eintrag mit `(project)`, nicht `/review`.
 
 Ihr entscheidet, der Agent schreibt den Code.
 
