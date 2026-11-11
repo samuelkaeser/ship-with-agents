@@ -4,6 +4,7 @@ import {
   SPITALBEITRAG_PER_DAY,
   billableHospitalDays,
   selbstbehaltCap,
+  spitalbeitragExemption,
   yearOf,
 } from './rules';
 import type { InsuredPerson, Invoice } from './types';
@@ -42,7 +43,8 @@ export interface Statement {
  *   (KVG Art. 64 Abs. 2 lit. b), capped per year (KVV Art. 103 Abs. 2).
  * - The Selbstbehalt is rounded half up to the whole Rappen per invoice.
  * - A hospital stay adds CHF 15 per billable day on top (KVV Art. 104 Abs. 1). It is not part of
- *   the Franchise or the cap, and it never exceeds what is left of the invoice.
+ *   the Franchise or the cap, and it never exceeds what is left of the invoice. Children and
+ *   young adults in education up to 25 are exempt (KVV Art. 104 Abs. 2).
  */
 export function computeStatement(
   person: InsuredPerson,
@@ -51,6 +53,7 @@ export function computeStatement(
 ): Statement {
   const franchise = francs(person.franchise);
   const cap = selbstbehaltCap(person, year);
+  const exempt = spitalbeitragExemption(person, year) !== undefined;
 
   const inYear = invoices
     .filter((invoice) => invoice.personId === person.id && yearOf(invoice.treatmentDate) === year)
@@ -75,7 +78,7 @@ export function computeStatement(
     capLeft = sub(capLeft, selbstbehaltPart);
     const billableDays = billableHospitalDays(invoice);
     const spitalbeitrag = min(
-      rappen(billableDays * SPITALBEITRAG_PER_DAY),
+      rappen(exempt ? 0 : billableDays * SPITALBEITRAG_PER_DAY),
       sub(sub(invoice.amount, franchisePart), selbstbehaltPart),
     );
     const patientShare = add(add(franchisePart, selbstbehaltPart), spitalbeitrag);

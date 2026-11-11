@@ -43,7 +43,7 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 
 18. **[implemented]** CHF 15 per day of hospital stay for adults, no time limit (KVV Art. 104 Abs. 1). Charged in addition to Franchise and Selbstbehalt.
 19. Not charged for the day of discharge **[implemented]**, nor for leave days **[not yet]** (KVV Art. 104 Abs. 1bis).
-20. No Spitalbeitrag for children, young adults in education (up to 25), and women whose cost sharing is waived for maternity (KVV Art. 104 Abs. 2).
+20. No Spitalbeitrag for children **[implemented]**, young adults in education up to 25 **[implemented]**, and women whose cost sharing is waived for maternity **[not yet]**, that part belongs to Mutterschaft (KVV Art. 104 Abs. 2). "In education" is a flag on the insured person, set in seed data only.
     Example: admitted Monday, discharged Saturday. Billable days Monday to Friday = 5, so 5 x 15 = CHF 75.
     Inpatient stays: the canton pays at least 55% of the stay, the insurer the rest. The Selbstbehalt runs on the insurer's share only, the cantonal share is not billed to the insured (unverified reading). Decision in the app: the invoice amount of a stay is the insurer share, entered directly. The app does not split off the cantonal share.
 

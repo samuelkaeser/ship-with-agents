@@ -4,11 +4,11 @@
 
 **Blocked by:** 01: Spitalbeitrag for an adult's hospital stay
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] A child's stay has Spitalbeitrag 0
-- [ ] A student in education aged 25 in the treatment year pays 0, aged 26 pays
-- [ ] A 22 year old not in education pays the Spitalbeitrag
-- [ ] Person page shows "Kein Spitalbeitrag" with the reason for exempt persons and nothing for others
-- [ ] Seed child and seed student with a stay show 0 in the running app
-- [ ] Glossary and rule sheet updated (rule 20, except the maternity part which stays not yet)
+- [x] A child's stay has Spitalbeitrag 0
+- [x] A student in education aged 25 in the treatment year pays 0, aged 26 pays
+- [x] A 22 year old not in education pays the Spitalbeitrag
+- [x] Person page shows "Kein Spitalbeitrag" with the reason for exempt persons and nothing for others
+- [x] Seed child and seed student with a stay show 0 in the running app
+- [x] Glossary and rule sheet updated (rule 20, except the maternity part which stays not yet)

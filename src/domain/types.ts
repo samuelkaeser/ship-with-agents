@@ -10,6 +10,8 @@ export interface InsuredPerson {
   name: string;
   dateOfBirth: IsoDate;
   franchise: Franchise;
+  /** In education, set in seed data only. Matters for the Spitalbeitrag exemption up to age 25. */
+  inEducation?: boolean;
 }
 
 export interface Invoice {

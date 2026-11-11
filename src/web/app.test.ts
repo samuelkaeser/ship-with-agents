@@ -152,6 +152,25 @@ describe('GET /persons/:id?year=', () => {
   });
 });
 
+describe('Spitalbeitrag exemptions', () => {
+  it('Kim Klein (child) has a stay and pays no Spitalbeitrag, the page says why', async () => {
+    const html = await textOf(await freshApp().request('/persons/kim-klein?year=2026'));
+    expect(html).toContain('Kein Spitalbeitrag: Kind');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 350\.00/);
+  });
+
+  it('Lena Lernend (22, in education) has a stay and pays no Spitalbeitrag, the page says why', async () => {
+    const html = await textOf(await freshApp().request('/persons/lena-lernend?year=2026'));
+    expect(html).toContain('Kein Spitalbeitrag: in Ausbildung bis 25');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 480\.00/);
+  });
+
+  it('says nothing about an exemption for an adult who pays', async () => {
+    const html = await textOf(await freshApp().request('/persons/sabine-spital?year=2026'));
+    expect(html).not.toContain('Kein Spitalbeitrag');
+  });
+});
+
 describe('Spitalbeitrag', () => {
   it('shows Sabine Spital: Monday to Saturday stay, 5 days, Spitalbeitrag 75, total 975', async () => {
     const html = await textOf(await freshApp().request('/persons/sabine-spital?year=2026'));

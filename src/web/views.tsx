@@ -1,7 +1,7 @@
 import { raw } from 'hono/html';
 import type { PropsWithChildren } from 'hono/jsx';
 import { formatChf, francs } from '../domain/money';
-import { isChild, selbstbehaltCap } from '../domain/rules';
+import { isChild, selbstbehaltCap, spitalbeitragExemption } from '../domain/rules';
 import type { Statement } from '../domain/statement';
 import type { InsuredPerson, Invoice } from '../domain/types';
 
@@ -91,6 +91,13 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
         {year} {isChild(person, year) ? 'Kind' : 'Erwachsene/r'}, Selbstbehalt-Obergrenze{' '}
         {formatChf(selbstbehaltCap(person, year))} pro Jahr.
       </p>
+
+      {spitalbeitragExemption(person, year) && (
+        <p>
+          Kein Spitalbeitrag:{' '}
+          {spitalbeitragExemption(person, year) === 'child' ? 'Kind' : 'in Ausbildung bis 25'}.
+        </p>
+      )}
 
       <h2>Rechnungen</h2>
       <table>

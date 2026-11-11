@@ -44,7 +44,7 @@ The highest Selbstbehalt one person pays per calendar year: CHF 700 for adults, 
 _Avoid_: Limit, maximum, ceiling
 
 **Spitalbeitrag**:
-CHF 15 per billable day of a hospital stay, on top of Franchise and Selbstbehalt. It is not part of the Franchise and not subject to the cap. A stay is an invoice with a discharge date, the Treatment date is the day of admission. The billable days run from admission up to, not including, the discharge day.
+CHF 15 per billable day of a hospital stay, on top of Franchise and Selbstbehalt. It is not part of the Franchise and not subject to the cap. A stay is an invoice with a discharge date, the Treatment date is the day of admission. The billable days run from admission up to, not including, the discharge day. Children and young adults in education up to age 25 (same year-difference age as Child) pay no Spitalbeitrag.
 _Avoid_: Hospital fee, Verpflegungskosten
 
 **Patient share**:

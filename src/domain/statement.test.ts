@@ -310,3 +310,27 @@ describe('worked example D: Spitalbeitrag', () => {
     expect(totals.spitalbeitrag).toBe(francs(0));
   });
 });
+
+describe('Spitalbeitrag exemptions (KVV Art. 104 Abs. 2)', () => {
+  const stay = { ...invoice('a', '2026-09-07', francs(1000)), dischargeDate: '2026-09-12' };
+  const spitalbeitragOf = (p: InsuredPerson) =>
+    computeStatement(p, [stay], 2026).totals.spitalbeitrag;
+
+  it('a child pays no Spitalbeitrag although the stay has 5 billable days', () => {
+    const { lines } = computeStatement(person('2015-06-01', 0), [stay], 2026);
+    expect(lines[0]?.billableDays).toBe(5);
+    expect(lines[0]?.spitalbeitrag).toBe(francs(0));
+  });
+
+  it('a student in education aged 25 in the treatment year pays nothing', () => {
+    expect(spitalbeitragOf({ ...person('2001-03-03'), inEducation: true })).toBe(francs(0));
+  });
+
+  it('a student in education aged 26 in the treatment year pays 75', () => {
+    expect(spitalbeitragOf({ ...person('2000-03-03'), inEducation: true })).toBe(francs(75));
+  });
+
+  it('a 22 year old not in education pays 75', () => {
+    expect(spitalbeitragOf(person('2004-03-03'))).toBe(francs(75));
+  });
+});

@@ -8,6 +8,13 @@ export const seedPersons: InsuredPerson[] = [
   { id: 'max-muster', name: 'Max Muster', dateOfBirth: '1970-09-12', franchise: 300 },
   { id: 'anna-stichtag', name: 'Anna Stichtag', dateOfBirth: '1990-02-28', franchise: 300 },
   { id: 'kim-klein', name: 'Kim Klein', dateOfBirth: '2019-04-01', franchise: 0 },
+  {
+    id: 'lena-lernend',
+    name: 'Lena Lernend',
+    dateOfBirth: '2004-08-19',
+    franchise: 300,
+    inEducation: true,
+  },
   { id: 'sabine-spital', name: 'Sabine Spital', dateOfBirth: '1975-03-14', franchise: 300 },
   { id: 'peter-sparfuchs', name: 'Peter Sparfuchs', dateOfBirth: '1978-11-23', franchise: 2500 },
 ];
@@ -44,6 +51,23 @@ export const seedInvoices: Invoice[] = [
   {
     ...inv('i12', 'sabine-spital', '2026-09-07', '2026-09-20', francs(6000), 'Spital, Operation'),
     dischargeDate: '2026-09-12',
+  },
+
+  // Kim (child) and Lena (22, in education) each have a stay but pay no Spitalbeitrag
+  {
+    ...inv(
+      'i13',
+      'kim-klein',
+      '2026-06-01',
+      '2026-06-15',
+      francs(2000),
+      'Kinderspital, Aufenthalt',
+    ),
+    dischargeDate: '2026-06-06',
+  },
+  {
+    ...inv('i14', 'lena-lernend', '2026-10-05', '2026-10-20', francs(2100), 'Spital, Blinddarm'),
+    dischargeDate: '2026-10-10',
   },
 
   // Peter: high Franchise, barely above it

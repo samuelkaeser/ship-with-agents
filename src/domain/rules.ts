@@ -31,3 +31,13 @@ export function billableHospitalDays(invoice: Invoice): number {
   const discharged = Date.parse(invoice.dischargeDate);
   return Math.max(0, Math.round((discharged - admitted) / DAY_MS));
 }
+
+/** KVV Art. 104 Abs. 2: no Spitalbeitrag for children and young adults in education up to 25. */
+export function spitalbeitragExemption(
+  person: InsuredPerson,
+  year: number,
+): 'child' | 'education' | undefined {
+  if (isChild(person, year)) return 'child';
+  if (person.inEducation && year - yearOf(person.dateOfBirth) <= 25) return 'education';
+  return undefined;
+}
