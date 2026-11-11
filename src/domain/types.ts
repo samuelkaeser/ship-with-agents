@@ -19,4 +19,6 @@ export interface Invoice {
   invoiceDate: IsoDate;
   amount: Rappen;
   description: string;
+  /** Specific maternity service (KVG Art. 29 Abs. 2), ticked by the clerk. */
+  maternityService?: boolean;
 }

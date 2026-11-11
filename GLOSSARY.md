@@ -51,6 +51,12 @@ _Avoid_: Co-pay, out-of-pocket
 The result for one insured person and one calendar year: per invoice the patient share (Franchise part and Selbstbehalt part) and the insurer share, plus yearly totals and what is left of Franchise and cap.
 _Avoid_: Report, summary, bill
 
+### Maternity
+
+**Maternity service**:
+An invoice the clerk marks as a specific maternity service (check-up, birth, midwife, breastfeeding advice, care of the healthy newborn, KVG Art. 29 Abs. 2). No cost sharing: patient share 0, and it uses up neither Franchise nor cap.
+_Avoid_: Pregnancy invoice, maternity invoice
+
 ### People
 
 **Child** and **Adult**:

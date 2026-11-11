@@ -9,6 +9,7 @@ export const seedPersons: InsuredPerson[] = [
   { id: 'anna-stichtag', name: 'Anna Stichtag', dateOfBirth: '1990-02-28', franchise: 300 },
   { id: 'kim-klein', name: 'Kim Klein', dateOfBirth: '2019-04-01', franchise: 0 },
   { id: 'peter-sparfuchs', name: 'Peter Sparfuchs', dateOfBirth: '1978-11-23', franchise: 2500 },
+  { id: 'sara-storch', name: 'Sara Storch', dateOfBirth: '1994-06-15', franchise: 300 },
 ];
 
 const inv = (
@@ -47,4 +48,18 @@ export const seedInvoices: Invoice[] = [
     'Rückenschmerzen, Abklärung',
   ),
   inv('i10', 'peter-sparfuchs', '2026-10-15', '2026-10-30', francs(600), 'Kontrolle'),
+
+  // Sara: pregnant. The check-up is a maternity service (free), the flu visit is charged
+  {
+    ...inv(
+      'i11',
+      'sara-storch',
+      '2026-05-12',
+      '2026-05-20',
+      francs(300),
+      'Schwangerschaftskontrolle',
+    ),
+    maternityService: true,
+  },
+  inv('i12', 'sara-storch', '2026-05-14', '2026-05-22', francs(200), 'Grippe, Hausarzt'),
 ];

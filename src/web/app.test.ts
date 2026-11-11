@@ -144,6 +144,27 @@ describe('POST /persons/:id/invoices', () => {
   });
 });
 
+describe('maternity service', () => {
+  it('shows Sara Storch: the flagged check-up is free, the flu visit costs CHF 200', async () => {
+    const html = await textOf(await freshApp().request('/persons/sara-storch?year=2026'));
+    expect(html).toContain('Mutterschaftsleistung');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 200\.00/);
+  });
+
+  it('saves the checkbox as a flag: a ticked CHF 300 invoice adds nothing to the patient total', async () => {
+    const app = freshApp();
+    await post(app, '/persons/erika-beispiel/invoices', {
+      treatmentDate: '2027-02-01',
+      invoiceDate: '2027-02-10',
+      amount: '300',
+      description: 'Schwangerschaftskontrolle',
+      maternityService: 'on',
+    });
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 0\.00/);
+  });
+});
+
 describe('GET /persons/:id?year=', () => {
   it.each(['abc', '-5', '2026.5', '20266'])('renders without a 500 for year=%s', async (year) => {
     const res = await freshApp().request(`/persons/erika-beispiel?year=${year}`);

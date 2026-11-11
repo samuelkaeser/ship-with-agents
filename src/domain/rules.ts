@@ -1,5 +1,5 @@
 import { francs, type Rappen } from './money';
-import type { InsuredPerson, IsoDate } from './types';
+import type { InsuredPerson, Invoice, IsoDate } from './types';
 
 export const SELBSTBEHALT_PERCENT = 10; // KVG Art. 64 Abs. 2 lit. b
 
@@ -18,4 +18,12 @@ export function isChild(person: InsuredPerson, year: number): boolean {
 
 export function selbstbehaltCap(person: InsuredPerson, year: number): Rappen {
   return isChild(person, year) ? SELBSTBEHALT_CAP_CHILD : SELBSTBEHALT_CAP_ADULT;
+}
+
+/** Why an invoice carries no cost sharing. */
+export type Exemption = 'maternityService';
+
+/** No cost sharing on maternity services (KVG Art. 64 Abs. 7 lit. a). */
+export function exemptionOf(invoice: Invoice): Exemption | undefined {
+  return invoice.maternityService ? 'maternityService' : undefined;
 }

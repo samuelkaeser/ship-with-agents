@@ -1,11 +1,15 @@
 import { raw } from 'hono/html';
 import type { PropsWithChildren } from 'hono/jsx';
 import { formatChf, francs } from '../domain/money';
-import { isChild, selbstbehaltCap } from '../domain/rules';
+import { isChild, selbstbehaltCap, type Exemption } from '../domain/rules';
 import type { Statement } from '../domain/statement';
 import type { InsuredPerson, Invoice } from '../domain/types';
 
 export const INSURER_NAME = 'Krankenkasse light';
+
+const EXEMPTION_LABEL: Record<Exemption, string> = {
+  maternityService: 'Mutterschaftsleistung, keine Kostenbeteiligung',
+};
 
 const css = `
   body { font-family: system-ui, sans-serif; margin: 0; background: #f6f7f9; color: #1d2330; }
@@ -135,6 +139,12 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
           Beschreibung
           <input type="text" name="description" required />
         </label>
+        <label>
+          <span>
+            <input type="checkbox" name="maternityService" /> Mutterschaftsleistung (KVG Art. 29
+            Abs. 2)
+          </span>
+        </label>
         <button type="submit">Rechnung speichern</button>
       </form>
 
@@ -166,7 +176,10 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
           {statement.lines.map((line) => (
             <tr>
               <td>{line.invoice.treatmentDate}</td>
-              <td>{line.invoice.description}</td>
+              <td>
+                {line.invoice.description}
+                {line.exemption && <small> ({EXEMPTION_LABEL[line.exemption]})</small>}
+              </td>
               <td class="num">{formatChf(line.invoice.amount)}</td>
               <td class="num">{formatChf(line.franchisePart)}</td>
               <td class="num">{formatChf(line.selbstbehaltPart)}</td>

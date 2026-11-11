@@ -63,6 +63,7 @@ export function createApp(store: Store) {
       invoiceDate: text('invoiceDate'),
       amount,
       description: text('description'),
+      maternityService: form.maternityService === 'on',
     });
     return c.redirect(`/persons/${person.id}?year=${yearOf(text('treatmentDate'))}`, 303);
   });

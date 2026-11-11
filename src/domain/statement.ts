@@ -1,5 +1,11 @@
 import { ZERO, add, francs, min, percentRoundHalfUp, sub, type Rappen } from './money';
-import { SELBSTBEHALT_PERCENT, selbstbehaltCap, yearOf } from './rules';
+import {
+  SELBSTBEHALT_PERCENT,
+  exemptionOf,
+  selbstbehaltCap,
+  yearOf,
+  type Exemption,
+} from './rules';
 import type { InsuredPerson, Invoice } from './types';
 
 export interface StatementLine {
@@ -8,6 +14,8 @@ export interface StatementLine {
   selbstbehaltPart: Rappen;
   patientShare: Rappen;
   insurerShare: Rappen;
+  /** Set when the invoice carries no cost sharing at all. */
+  exemption?: Exemption;
 }
 
 export interface Statement {
@@ -55,6 +63,19 @@ export function computeStatement(
   const lines: StatementLine[] = [];
 
   for (const invoice of inYear) {
+    // Exempt invoices use up neither Franchise nor cap.
+    const exemption = exemptionOf(invoice);
+    if (exemption) {
+      lines.push({
+        invoice,
+        franchisePart: ZERO,
+        selbstbehaltPart: ZERO,
+        patientShare: ZERO,
+        insurerShare: invoice.amount,
+        exemption,
+      });
+      continue;
+    }
     const franchisePart = min(invoice.amount, franchiseLeft);
     const selbstbehaltPart = min(
       percentRoundHalfUp(sub(invoice.amount, franchisePart), SELBSTBEHALT_PERCENT),

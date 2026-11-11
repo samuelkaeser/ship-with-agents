@@ -228,3 +228,28 @@ describe('Selbstbehalt rounding', () => {
     expect(totals.selbstbehaltPart).toBe(rappen(0));
   });
 });
+
+describe('maternity service (KVG Art. 64 Abs. 7 lit. a)', () => {
+  const checkup = { ...invoice('m', '2026-03-01', francs(300)), maternityService: true };
+
+  it('a flagged invoice costs the insured person nothing, the insurer pays all', () => {
+    const { lines, totals } = computeStatement(adult, [checkup], 2026);
+    expect(lines[0]).toMatchObject({
+      franchisePart: francs(0),
+      selbstbehaltPart: francs(0),
+      patientShare: francs(0),
+      insurerShare: francs(300),
+      exemption: 'maternityService',
+    });
+    expect(totals.patientShare).toBe(francs(0));
+  });
+
+  it('uses up neither Franchise nor cap: a later CHF 5,000 bill still costs 770 (example A)', () => {
+    const { totals } = computeStatement(
+      adult,
+      [checkup, invoice('a', '2026-04-01', francs(5000))],
+      2026,
+    );
+    expect(totals.patientShare).toBe(francs(770));
+  });
+});
