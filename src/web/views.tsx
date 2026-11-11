@@ -45,6 +45,9 @@ export function Layout({ title, children }: PropsWithChildren<{ title: string }>
   );
 }
 
+const drugNote = (invoice: Invoice) =>
+  invoice.differentiatedDrug ? 'Medikament mit 40% Selbstbehalt' : undefined;
+
 export function PersonList({ persons }: { persons: InsuredPerson[] }) {
   return (
     <Layout title="Versicherte">
@@ -107,7 +110,10 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
             <tr>
               <td>{invoice.treatmentDate}</td>
               <td>{invoice.invoiceDate}</td>
-              <td>{invoice.description}</td>
+              <td>
+                {invoice.description}
+                {drugNote(invoice) && <small> ({drugNote(invoice)})</small>}
+              </td>
               <td class="num">{formatChf(invoice.amount)}</td>
             </tr>
           ))}
@@ -134,6 +140,11 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
         <label>
           Beschreibung
           <input type="text" name="description" required />
+        </label>
+        <label>
+          <span>
+            <input type="checkbox" name="differentiatedDrug" /> Medikament mit 40% Selbstbehalt
+          </span>
         </label>
         <button type="submit">Rechnung speichern</button>
       </form>
@@ -166,7 +177,15 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
           {statement.lines.map((line) => (
             <tr>
               <td>{line.invoice.treatmentDate}</td>
-              <td>{line.invoice.description}</td>
+              <td>
+                {line.invoice.description}
+                {drugNote(line.invoice) && (
+                  <>
+                    <br />
+                    <small>{drugNote(line.invoice)}</small>
+                  </>
+                )}
+              </td>
               <td class="num">{formatChf(line.invoice.amount)}</td>
               <td class="num">{formatChf(line.franchisePart)}</td>
               <td class="num">{formatChf(line.selbstbehaltPart)}</td>

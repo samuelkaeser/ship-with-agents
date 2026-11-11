@@ -36,8 +36,12 @@ The fixed yearly amount the insured person pays in full before the insurer pays 
 _Avoid_: Deductible, excess
 
 **Selbstbehalt**:
-10% of the costs above the Franchise, up to the cap.
+10% of the costs above the Franchise (40% for a differentiated drug), up to the cap.
 _Avoid_: Co-insurance, coinsurance
+
+**Differentiated drug**:
+An invoice the clerk marks as a drug with a cheaper alternative of the same active ingredient. Its Selbstbehalt is 40% instead of 10%. The app does not compare prices, the clerk decides.
+_Avoid_: Expensive drug, original drug
 
 **Cap**:
 The highest Selbstbehalt one person pays per calendar year: CHF 700 for adults, CHF 350 for children.

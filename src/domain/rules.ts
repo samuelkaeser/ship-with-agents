@@ -1,7 +1,13 @@
 import { francs, type Rappen } from './money';
-import type { InsuredPerson, IsoDate } from './types';
+import type { InsuredPerson, Invoice, IsoDate } from './types';
 
 export const SELBSTBEHALT_PERCENT = 10; // KVG Art. 64 Abs. 2 lit. b
+export const SELBSTBEHALT_PERCENT_DRUG = 40; // KLV Art. 38a Abs. 1
+
+/** Selbstbehalt percentage of one invoice: 40% for a marked drug, otherwise 10%. */
+export function selbstbehaltPercent(invoice: Invoice): number {
+  return invoice.differentiatedDrug ? SELBSTBEHALT_PERCENT_DRUG : SELBSTBEHALT_PERCENT;
+}
 
 // KVV Art. 103 Abs. 2
 export const SELBSTBEHALT_CAP_ADULT = francs(700);

@@ -151,3 +151,25 @@ describe('GET /persons/:id?year=', () => {
     expect(await textOf(res)).toContain('Erika Beispiel');
   });
 });
+
+describe('drug with 40% Selbstbehalt', () => {
+  it('shows the seed person Lena Original: CHF 300 visit, then a CHF 100 original drug, patient pays 340', async () => {
+    const html = await textOf(await freshApp().request('/persons/lena-original?year=2026'));
+    expect(html).toContain('Medikament mit 40% Selbstbehalt');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 340\.00/);
+  });
+
+  it('a posted invoice with the checkbox is charged 40%: CHF 1,000 = 300 Franchise + 280', async () => {
+    const app = freshApp();
+    await post(app, '/persons/max-muster/invoices', {
+      treatmentDate: '2027-02-01',
+      invoiceDate: '2027-02-05',
+      amount: '1000',
+      description: 'Original',
+      differentiatedDrug: 'on',
+    });
+    const html = await textOf(await app.request('/persons/max-muster?year=2027'));
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 580\.00/);
+    expect(html).toContain('Medikament mit 40% Selbstbehalt');
+  });
+});

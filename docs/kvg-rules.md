@@ -34,7 +34,7 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 
 ### Medikamente with 40% Selbstbehalt **[not yet]**
 
-15. Differentiated Selbstbehalt for drugs: 40% instead of 10% when the factory price is at least 10% above the average of the cheapest third of all drugs on the Spezialitätenliste with the same active ingredient (KLV Art. 38a Abs. 1). Applies to originals, generics, co-marketing, reference drugs and biosimilars (Abs. 2).
+15. **[implemented in part]** The clerk marks an invoice as a differentiated drug, the app then charges 40%. The app does not check the price comparison itself (no drug catalogue). Differentiated Selbstbehalt for drugs: 40% instead of 10% when the factory price is at least 10% above the average of the cheapest third of all drugs on the Spezialitätenliste with the same active ingredient (KLV Art. 38a Abs. 1). Applies to originals, generics, co-marketing, reference drugs and biosimilars (Abs. 2).
 16. The 40% does not apply if the doctor expressly prescribes the original for medical reasons, or the pharmacist documents a medical reason against substitution (KLV Art. 38a Abs. 7).
 17. A drug cost counted at more than 10% only counts half of the excess toward the cap. At 40%, that is 30 points above the legal rate, so 15 points count toward the CHF 700 cap: 10 + 15 = 25% of the drug cost counts. The patient still pays the full 40% (KVV Art. 104a Abs. 2).
     Example: Franchise already met, original drug CHF 100, generic exists, no medical reason. Patient pays 40, counted toward the cap: 25. With a medical reason: patient pays 10, counted 10.

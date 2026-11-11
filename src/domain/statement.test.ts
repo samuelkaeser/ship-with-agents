@@ -228,3 +228,41 @@ describe('Selbstbehalt rounding', () => {
     expect(totals.selbstbehaltPart).toBe(rappen(0));
   });
 });
+
+describe('worked example G: drug with 40% Selbstbehalt', () => {
+  // Franchise 300 is used up by an ordinary invoice first, so the drug invoice is all Selbstbehalt.
+  const franchiseMet = invoice('a', '2026-01-10', francs(300));
+  const drug = (amount: Rappen): Invoice => ({
+    ...invoice('b', '2026-02-10', amount),
+    differentiatedDrug: true,
+  });
+
+  it('original drug CHF 100, no medical reason: patient pays 40, insurer 60', () => {
+    const { lines } = computeStatement(adult, [franchiseMet, drug(francs(100))], 2026);
+    expect(lines[1]).toMatchObject({
+      franchisePart: francs(0),
+      selbstbehaltPart: francs(40),
+      patientShare: francs(40),
+      insurerShare: francs(60),
+    });
+  });
+
+  it('the Franchise comes first: a marked CHF 200 drug inside the Franchise has no Selbstbehalt', () => {
+    const { lines } = computeStatement(adult, [drug(francs(200))], 2026);
+    expect(lines[0]).toMatchObject({ franchisePart: francs(200), selbstbehaltPart: francs(0) });
+  });
+
+  it('only the part above the Franchise is charged 40%: CHF 400 drug = 300 + 40', () => {
+    const { lines } = computeStatement(adult, [drug(francs(400))], 2026);
+    expect(lines[0]).toMatchObject({ franchisePart: francs(300), selbstbehaltPart: francs(40) });
+  });
+
+  it('an unmarked invoice of the same amount is still charged 10%', () => {
+    const { lines } = computeStatement(
+      adult,
+      [franchiseMet, invoice('b', '2026-02-10', francs(100))],
+      2026,
+    );
+    expect(lines[1]?.selbstbehaltPart).toBe(francs(10));
+  });
+});

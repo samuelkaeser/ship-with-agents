@@ -19,4 +19,6 @@ export interface Invoice {
   invoiceDate: IsoDate;
   amount: Rappen;
   description: string;
+  /** A drug charged 40% Selbstbehalt instead of 10% (KLV Art. 38a Abs. 1). Set by the clerk. */
+  differentiatedDrug?: boolean;
 }
