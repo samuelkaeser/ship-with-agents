@@ -1,7 +1,7 @@
 import { raw } from 'hono/html';
 import type { PropsWithChildren } from 'hono/jsx';
 import { formatChf, francs } from '../domain/money';
-import { isChild, selbstbehaltCap, type Exemption } from '../domain/rules';
+import { isChild, maternityEnd, selbstbehaltCap, type Exemption } from '../domain/rules';
 import type { Statement } from '../domain/statement';
 import type { InsuredPerson, Invoice } from '../domain/types';
 
@@ -150,11 +150,22 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
       </form>
 
       <h2>Mutterschaft</h2>
-      {person.maternity && <p>Schwangerschaft: 13. Woche ab {person.maternity.week13Start}.</p>}
+      {person.maternity && (
+        <p>
+          Schwangerschaft: 13. Woche ab {person.maternity.week13Start}
+          {person.maternity.birthDate &&
+            `, Geburt am ${person.maternity.birthDate}, keine Kostenbeteiligung bis ${maternityEnd(person.maternity)}`}
+          .
+        </p>
+      )}
       <form method="post" action={`/persons/${person.id}/maternity`}>
         <label>
           Beginn der 13. Woche (laut Arzt)
           <input type="date" name="week13Start" required />
+        </label>
+        <label>
+          Geburtsdatum (leer lassen bis zur Geburt)
+          <input type="date" name="birthDate" />
         </label>
         <button type="submit">Schwangerschaft erfassen</button>
       </form>

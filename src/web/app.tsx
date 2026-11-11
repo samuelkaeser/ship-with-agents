@@ -74,10 +74,15 @@ export function createApp(store: Store) {
 
     const form = await c.req.parseBody();
     const week13Start = String(form.week13Start ?? '').trim();
-    if (!isValidDate(week13Start)) {
-      return c.html(renderPerson(person, undefined, ['Beginn der 13. Woche ist ungültig.']), 400);
+    const birthDate = String(form.birthDate ?? '').trim();
+    const errors: string[] = [];
+    if (!isValidDate(week13Start)) errors.push('Beginn der 13. Woche ist ungültig.');
+    if (birthDate && !isValidDate(birthDate)) errors.push('Geburtsdatum ist ungültig.');
+    else if (birthDate && birthDate < week13Start) {
+      errors.push('Geburtsdatum liegt vor dem Beginn der 13. Woche.');
     }
-    store.setMaternity(person.id, { week13Start });
+    if (errors.length > 0) return c.html(renderPerson(person, undefined, errors), 400);
+    store.setMaternity(person.id, { week13Start, ...(birthDate && { birthDate }) });
     return c.redirect(`/persons/${person.id}?year=${yearOf(week13Start)}`, 303);
   });
 

@@ -14,7 +14,7 @@ export const seedPersons: InsuredPerson[] = [
     name: 'Sara Storch',
     dateOfBirth: '1994-06-15',
     franchise: 300,
-    maternity: { week13Start: '2026-06-01' },
+    maternity: { week13Start: '2026-06-01', birthDate: '2026-12-10' },
   },
 ];
 
@@ -70,4 +70,8 @@ export const seedInvoices: Invoice[] = [
   },
   inv('i12', 'sara-storch', '2026-05-14', '2026-05-22', francs(200), 'Grippe, Hausarzt'),
   inv('i13', 'sara-storch', '2026-06-10', '2026-06-18', francs(200), 'Grippe, Hausarzt'),
+  // Birth on 2026-12-10, the period ends on day 56 = 2027-02-04
+  inv('i14', 'sara-storch', '2026-12-10', '2026-12-20', francs(4000), 'Geburt'),
+  inv('i15', 'sara-storch', '2027-01-20', '2027-01-28', francs(150), 'Grippe, Hausarzt'),
+  inv('i16', 'sara-storch', '2027-02-05', '2027-02-12', francs(200), 'Hausarzt'),
 ];

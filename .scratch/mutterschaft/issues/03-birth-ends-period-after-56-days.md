@@ -4,15 +4,15 @@
 
 **Blocked by:** 02: Free of charge from the 13th week of pregnancy
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Day 56 after birth is exempt, day 57 is charged
-- [ ] The birth date itself is exempt
-- [ ] Without a birth date the period has no end
-- [ ] Birth on 2026-12-10: an invoice on 2027-01-20 is free in the 2027 statement, an invoice on 2027-02-05 is charged
-- [ ] A birth date before the start of week 13 is rejected with a German message and nothing is stored
-- [ ] The person page shows the recorded end
-- [ ] Rule 23 and worked example F marked implemented in the rule sheet (hospital days stay with the feature Spitalbeitrag), the glossary definition covers the end of the period
-- [ ] `pnpm test`, `pnpm typecheck` and `pnpm exec prettier --check .` pass
+- [x] Day 56 after birth is exempt, day 57 is charged
+- [x] The birth date itself is exempt
+- [x] Without a birth date the period has no end
+- [x] Birth on 2026-12-10: an invoice on 2027-01-20 is free in the 2027 statement, an invoice on 2027-02-05 is charged
+- [x] A birth date before the start of week 13 is rejected with a German message and nothing is stored
+- [x] The person page shows the recorded end
+- [x] Rule 23 and worked example F marked implemented in the rule sheet (hospital days stay with the feature Spitalbeitrag), the glossary definition covers the end of the period
+- [x] `pnpm test`, `pnpm typecheck` and `pnpm exec prettier --check .` pass
 
 ## Comments

@@ -47,11 +47,11 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
     Example: admitted Monday, discharged Saturday. Billable days Monday to Friday = 5, so 5 x 15 = CHF 75.
     Inpatient stays: the canton pays at least 55% of the stay, the insurer the rest. The Selbstbehalt runs on the insurer's share only, the cantonal share is not billed to the insured (unverified reading). Open decision for the team: does the app take the insurer share as a direct input, or does it split the invoice into cantonal and insurer share itself?
 
-### Mutterschaft **[not yet]**
+### Mutterschaft **[implemented]**
 
 21. **[implemented]** No cost sharing at all on the specific maternity services of KVG Art. 29 Abs. 2: check-ups during and after pregnancy, birth, midwife care, breastfeeding advice, care of the healthy newborn (KVG Art. 64 Abs. 7 lit. a).
 22. **[implemented]** From the 13th week of pregnancy, during birth, and until 8 weeks after birth, no cost sharing on any basic-insurance service, also for illnesses unrelated to the pregnancy (KVG Art. 64 Abs. 7 lit. b).
-23. The doctor states the presumed start of week 13 on the invoice (KVV Art. 105 Abs. 1). A stillbirth after week 23 counts as birth (Abs. 2). The period ends on day 56 after birth at 24:00 (Abs. 3).
+23. **[implemented]** The doctor states the presumed start of week 13 on the invoice (KVV Art. 105 Abs. 1). A stillbirth after week 23 counts as birth (Abs. 2). The period ends on day 56 after birth at 24:00 (Abs. 3).
     Example: woman in week 14, CHF 300 check-up and CHF 200 flu visit: all cost sharing 0. The same flu visit in week 10 is normal cost sharing.
 
 ### Franchisen-Vergleich **[not yet]**
@@ -68,7 +68,7 @@ Numbers are from the research file. Single persons only. Each example is tagged 
 - **C. [implemented]** Child (Franchise 0), CHF 5,000: no Franchise, 10% = 500, capped at 350. Patient pays 350. (The research variants with Franchise 600 and the sibling family cap are out of scope.)
 - **D. [not yet] (feature Spitalbeitrag)** Hospital: adult whose Franchise is already used up and who has paid no Selbstbehalt yet (the full cap room of CHF 700 is left); admitted Monday, discharged Saturday. Billable days Monday to Friday = 5 (discharge day free): 5 x 15 = 75. Insurer's share of the stay CHF 6,000: Selbstbehalt 600 (under the remaining cap). Patient pays 675. Assumption: the Selbstbehalt runs on the insurer's share (unverified).
 - **E. [implemented]** Year boundary: adult, CHF 400 treatment on 20.12.2026, CHF 400 treatment on 8.1.2027, both invoiced 15.1.2027. December visit belongs to 2026: 300 + 10 = 310. January visit belongs to 2027 with a fresh Franchise: 300 + 10 = 310. Total 620, not the 350 you get by invoice date.
-- **F. [not yet] (feature Mutterschaft)** Woman in week 14, CHF 300 check-up and CHF 200 flu visit, 5 days hospital for the birth. All cost sharing 0, Spitalbeitrag 0. The same CHF 200 flu visit in week 10 is normal cost sharing.
+- **F. [implemented] (feature Mutterschaft, without the hospital days: Spitalbeitrag is its own feature)** Woman in week 14, CHF 300 check-up and CHF 200 flu visit, 5 days hospital for the birth. All cost sharing 0, Spitalbeitrag 0. The same CHF 200 flu visit in week 10 is normal cost sharing.
 - **G. [not yet] (feature Medikamente with 40% Selbstbehalt)** Franchise already met, original drug CHF 100, generic exists, no medical reason: patient pays 40, counted toward the cap 10 + 15 = 25. With a medical reason: patient pays 10.
 
 ## 6. Out of scope

@@ -283,6 +283,44 @@ describe('maternity period from week 13 (KVG Art. 64 Abs. 7 lit. b)', () => {
     expect(lines.map((line) => line.patientShare)).toEqual([francs(100), francs(0)]);
   });
 
+  it('has no end while no birth is recorded', () => {
+    const { lines } = computeStatement(pregnant, [invoice('a', '2026-11-30', francs(100))], 2026);
+    expect(lines[0]?.patientShare).toBe(francs(0));
+  });
+
+  describe('after the birth (KVV Art. 105 Abs. 3: until day 56 at 24:00)', () => {
+    const born = { ...adult, maternity: { week13Start: '2026-06-01', birthDate: '2026-12-10' } };
+    const patientShares = (invoices: Invoice[], year: number) =>
+      computeStatement(born, invoices, year).lines.map((line) => line.patientShare);
+
+    it('the birth date itself is free', () => {
+      expect(patientShares([invoice('a', '2026-12-10', francs(4000))], 2026)).toEqual([francs(0)]);
+    });
+
+    it('day 56 after birth (2027-02-04) is free, day 57 is charged', () => {
+      expect(
+        patientShares(
+          [invoice('a', '2027-02-04', francs(200)), invoice('b', '2027-02-05', francs(200))],
+          2027,
+        ),
+      ).toEqual([francs(0), francs(200)]);
+    });
+
+    it('the period continues across 31 December: a visit on 2027-01-20 is free', () => {
+      expect(patientShares([invoice('a', '2027-01-20', francs(150))], 2027)).toEqual([francs(0)]);
+    });
+
+    it('counts days over a month end: birth 2026-01-20 gives day 56 = 2026-03-17', () => {
+      const early = { ...adult, maternity: { week13Start: '2025-11-01', birthDate: '2026-01-20' } };
+      const { lines } = computeStatement(
+        early,
+        [invoice('a', '2026-03-17', francs(100)), invoice('b', '2026-03-18', francs(100))],
+        2026,
+      );
+      expect(lines.map((line) => line.patientShare)).toEqual([francs(0), francs(100)]);
+    });
+  });
+
   it('names the maternity service when the flag and the period both apply', () => {
     const flagged = { ...invoice('a', '2026-06-09', francs(300)), maternityService: true };
     expect(computeStatement(pregnant, [flagged], 2026).lines[0]?.exemption).toBe(

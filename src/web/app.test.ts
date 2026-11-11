@@ -210,6 +210,45 @@ describe('POST /persons/:id/maternity', () => {
     expect(html).not.toContain('13. Woche ab');
   });
 
+  it('shows the end for Sara Storch: free on 2027-01-20, charged CHF 200 on 2027-02-05', async () => {
+    const html = await textOf(await freshApp().request('/persons/sara-storch?year=2027'));
+    expect(html).toContain('Geburt am 2026-12-10, keine Kostenbeteiligung bis 2027-02-04');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 200\.00/);
+  });
+
+  it('stores the birth date and ends the period 56 days later', async () => {
+    const app = freshApp();
+    await sendInvoice(app);
+    await post(app, '/persons/erika-beispiel/maternity', {
+      week13Start: '2026-12-01',
+      birthDate: '2027-01-10',
+    });
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+    expect(html).toContain('bis 2027-03-07');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 200\.00/); // 2027-03-10 is day 59
+  });
+
+  it('rejects a birth date before the start of week 13 and stores nothing', async () => {
+    const app = freshApp();
+    const res = await post(app, '/persons/erika-beispiel/maternity', {
+      week13Start: '2027-03-01',
+      birthDate: '2027-02-28',
+    });
+    expect(res.status).toBe(400);
+    expect(await textOf(res)).toContain('Geburtsdatum liegt vor dem Beginn der 13. Woche.');
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2026'));
+    expect(html).not.toContain('13. Woche ab');
+  });
+
+  it('rejects an impossible birth date', async () => {
+    const res = await post(freshApp(), '/persons/erika-beispiel/maternity', {
+      week13Start: '2027-03-01',
+      birthDate: '2027-13-01',
+    });
+    expect(res.status).toBe(400);
+    expect(await textOf(res)).toContain('Geburtsdatum ist ungültig.');
+  });
+
   it('answers 404 for an unknown person', async () => {
     const res = await post(freshApp(), '/persons/nobody/maternity', { week13Start: '2027-03-01' });
     expect(res.status).toBe(404);

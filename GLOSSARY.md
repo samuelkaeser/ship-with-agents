@@ -58,7 +58,7 @@ An invoice the clerk marks as a specific maternity service (check-up, birth, mid
 _Avoid_: Pregnancy invoice, maternity invoice
 
 **Maternity period**:
-The time in which an insured person pays no cost sharing on any invoice, whatever it is for. It starts on the first day of week 13 of the pregnancy, as stated by the doctor (KVG Art. 64 Abs. 7 lit. b, KVV Art. 105). The treatment date decides whether an invoice is inside. One per insured person; recording it again replaces it.
+The time in which an insured person pays no cost sharing on any invoice, whatever it is for. It starts on the first day of week 13 of the pregnancy, as stated by the doctor, and ends on day 56 after the birth date, inclusive (KVG Art. 64 Abs. 7 lit. b, KVV Art. 105). Without a birth date it has no end. The treatment date decides whether an invoice is inside. One per insured person; recording it again replaces it.
 _Avoid_: Pregnancy, Mutterschaftsfrist
 
 ### People

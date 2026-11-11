@@ -9,6 +9,8 @@ export type Franchise = 0 | 300 | 500 | 1500 | 2500;
 export interface Maternity {
   /** Presumed first day of week 13. */
   week13Start: IsoDate;
+  /** Day of birth. Stillbirth after week 23 counts as birth (KVV Art. 105 Abs. 2). */
+  birthDate?: IsoDate;
 }
 
 export interface InsuredPerson {
