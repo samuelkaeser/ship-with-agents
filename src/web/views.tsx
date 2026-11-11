@@ -1,7 +1,7 @@
 import { raw } from 'hono/html';
 import type { PropsWithChildren } from 'hono/jsx';
 import { formatChf, francs } from '../domain/money';
-import type { FranchiseOption } from '../domain/franchise-comparison';
+import { cheapestOf, type FranchiseOption } from '../domain/franchise-comparison';
 import { isChild, selbstbehaltCap } from '../domain/rules';
 import type { Statement } from '../domain/statement';
 import type { InsuredPerson, Invoice } from '../domain/types';
@@ -78,7 +78,7 @@ interface PersonPageProps {
   person: InsuredPerson;
   invoices: Invoice[];
   statement: Statement;
-  cheapest?: FranchiseOption;
+  comparison: FranchiseOption[];
   years: number[];
   errors?: string[];
 }
@@ -87,11 +87,12 @@ export function PersonPage({
   person,
   invoices,
   statement,
-  cheapest,
+  comparison,
   years,
   errors = [],
 }: PersonPageProps) {
   const { year, totals } = statement;
+  const cheapest = cheapestOf(comparison);
   return (
     <Layout title={person.name}>
       <h1>{person.name}</h1>
@@ -207,6 +208,34 @@ export function PersonPage({
           Günstigste Franchise {year}: {formatChf(francs(cheapest.franchise))} (Prämie und
           Kostenbeteiligung zusammen {formatChf(cheapest.total)}).
         </p>
+      )}
+      {cheapest && (
+        <>
+          <h2>Franchisen-Vergleich {year}</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Franchise</th>
+                <th class="num">Prämie (12 Monate)</th>
+                <th class="num">Kostenbeteiligung</th>
+                <th class="num">Jahreskosten</th>
+              </tr>
+            </thead>
+            <tbody>
+              {comparison.map((option) => (
+                <tr>
+                  <td>
+                    {formatChf(francs(option.franchise))}
+                    {option === cheapest ? ' (günstigste)' : ''}
+                  </td>
+                  <td class="num">{formatChf(option.premium)}</td>
+                  <td class="num">{formatChf(option.costSharing)}</td>
+                  <td class="num">{formatChf(option.total)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
     </Layout>
   );

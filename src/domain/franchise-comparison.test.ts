@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cheapestFranchise } from './franchise-comparison';
+import { cheapestOf, compareFranchises } from './franchise-comparison';
 import { francs, rappen, type Rappen } from './money';
 import type { InsuredPerson, Invoice } from './types';
 
@@ -20,6 +20,36 @@ const invoice = (amount: Rappen): Invoice => ({
 });
 
 const adult = person('1985-05-05');
+
+const cheapestFranchise = (p: InsuredPerson, invoices: Invoice[], year: number) =>
+  cheapestOf(compareFranchises(p, invoices, year));
+
+describe('compare all four Franchise levels', () => {
+  it('worked example H: CHF 5,000 bill gives 5,810, 5,690, 5,870 and 6,350 in ascending order', () => {
+    const options = compareFranchises(adult, [invoice(francs(5000))], 2026);
+    expect(options.map((option) => option.franchise)).toEqual([300, 500, 1500, 2500]);
+    expect(options.map((option) => option.total)).toEqual([
+      francs(5810),
+      francs(5690),
+      francs(5870),
+      francs(6350),
+    ]);
+  });
+
+  it('splits each level into 12 premiums and the cost sharing of the yearly statement', () => {
+    const [first] = compareFranchises(adult, [invoice(francs(5000))], 2026);
+    expect(first).toEqual({
+      franchise: 300,
+      premium: francs(5040),
+      costSharing: francs(770),
+      total: francs(5810),
+    });
+  });
+
+  it('children have no Franchise choice, so no levels at all', () => {
+    expect(compareFranchises(person('2019-04-01'), [invoice(francs(5000))], 2026)).toEqual([]);
+  });
+});
 
 describe('cheapest Franchise', () => {
   it('worked example H: CHF 5,000 bill, 500 wins with 4,740 premium + 950 cost sharing', () => {

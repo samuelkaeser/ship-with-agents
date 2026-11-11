@@ -58,8 +58,9 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 
 24. **[implemented]** The Franchise levels the app knows are in rules 1 to 3. The yearly statement rules (sections 2 and 3) apply unchanged to every level. The comparison counts the yearly cost of a level: 12 fictional monthly premiums plus the Kostenbeteiligung of the normal yearly statement with that Franchise. The cheapest level has the lowest yearly cost, a tie goes to the lower Franchise. Children are not compared (no Franchise choice). Premiums are fictional, the same for every year, and not taken from any law.
 25. Premium discounts for a higher Franchise are set by the insurer. The law only caps them: at most 70% of the extra risk the insured takes on (KVV Art. 95 Abs. 2bis).
-26. **[not yet]** All four levels side by side with the difference to the current Franchise.
-27. **[not yet]** Explanations for children, years without invoices and the 1 January rule (rule 5).
+26. **[implemented]** The page shows all four levels side by side with premium, Kostenbeteiligung and yearly cost, the cheapest one marked.
+27. **[not yet]** The difference of each level to the person's current Franchise.
+28. **[not yet]** Explanations for children, years without invoices and the 1 January rule (rule 5).
 
 ## 5. Worked examples
 

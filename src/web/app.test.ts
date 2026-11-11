@@ -170,9 +170,28 @@ describe('Franchisen-Vergleich on the person page', () => {
     expect(html).toContain("CHF 5'940.00");
   });
 
+  it('shows all four levels for Erika 2026, only the cheapest one marked', async () => {
+    const html = await textOf(await freshApp().request('/persons/erika-beispiel?year=2026'));
+    expect(html).toContain('Franchisen-Vergleich 2026');
+    for (const total of ["5'810.00", "5'690.00", "5'870.00", "6'350.00"]) {
+      expect(html).toContain(`CHF ${total}`);
+    }
+    expect(html).toMatch(/CHF 500\.00 \(günstigste\)/);
+    expect(html.match(/\(günstigste\)/g)).toHaveLength(1);
+  });
+
+  it('shows the comparison for the selected year: Peter has no invoices in 2027, 2500 wins', async () => {
+    const html = await textOf(await freshApp().request('/persons/peter-sparfuchs?year=2027'));
+    expect(html).toContain('Franchisen-Vergleich 2027');
+    expect(html).toMatch(/CHF 2'500\.00 \(günstigste\)/);
+    expect(html).toContain("CHF 3'600.00");
+  });
+
   it('shows no comparison for the child Kim Klein', async () => {
     const res = await freshApp().request('/persons/kim-klein?year=2026');
     expect(res.status).toBe(200);
-    expect(await textOf(res)).not.toContain('Günstigste Franchise');
+    const html = await textOf(res);
+    expect(html).not.toContain('Günstigste Franchise');
+    expect(html).not.toContain('Franchisen-Vergleich');
   });
 });

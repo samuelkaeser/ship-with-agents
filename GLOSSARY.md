@@ -59,6 +59,10 @@ _Avoid_: Fee, contribution
 12 monthly premiums plus the Kostenbeteiligung of the calendar year. The Franchise comparison ranks the Franchise levels by it.
 _Avoid_: Total cost, annual price
 
+**Franchise comparison**:
+For one adult and one calendar year, the yearly cost of each Franchise level (300, 500, 1500, 2500) as if the person had chosen it. The cheapest level is the one with the lowest yearly cost, a tie goes to the lower Franchise.
+_Avoid_: Franchise recommendation, optimisation
+
 ### People
 
 **Child** and **Adult**:

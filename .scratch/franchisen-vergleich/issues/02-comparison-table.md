@@ -4,11 +4,11 @@
 
 **Blocked by:** 01: Cheapest Franchise as one sentence
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Erika Beispiel, 2026: four rows with Jahreskosten CHF 5'810.00, 5'690.00, 5'870.00 and 6'350.00 in ascending Franchise order
-- [ ] The 500 row carries the mark "günstigste", no other row does
-- [ ] Each row's Prämie is 12 times its monthly premium, and its Kostenbeteiligung equals the patient total of the yearly statement for that level
-- [ ] Switching the year on the person page (Anna Stichtag, 2026 and 2027) shows the comparison for that year
-- [ ] Child: no table
-- [ ] `pnpm test`, `pnpm typecheck` and `pnpm exec prettier --check .` pass
+- [x] Erika Beispiel, 2026: four rows with Jahreskosten CHF 5'810.00, 5'690.00, 5'870.00 and 6'350.00 in ascending Franchise order
+- [x] The 500 row carries the mark "günstigste", no other row does
+- [x] Each row's Prämie is 12 times its monthly premium, and its Kostenbeteiligung equals the patient total of the yearly statement for that level
+- [x] Switching the year on the person page (Anna Stichtag, 2026 and 2027) shows the comparison for that year
+- [x] Child: no table
+- [x] `pnpm test`, `pnpm typecheck` and `pnpm exec prettier --check .` pass

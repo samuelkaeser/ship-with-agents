@@ -28,21 +28,28 @@ export interface FranchiseOption {
 }
 
 /**
- * The Franchise with the lowest yearly cost (12 premiums + Kostenbeteiligung) for one adult and
- * calendar year. Cost sharing comes from the normal yearly statement with the Franchise swapped.
- * Ties go to the lower Franchise. Children have no Franchise choice: undefined.
+ * What each Franchise level would have cost one adult in a calendar year, in ascending Franchise
+ * order. Cost sharing comes from the normal yearly statement with the Franchise swapped.
+ * Children have no Franchise choice: empty list.
  */
-export function cheapestFranchise(
+export function compareFranchises(
   person: InsuredPerson,
   invoices: readonly Invoice[],
   year: number,
-): FranchiseOption | undefined {
-  if (isChild(person, year)) return undefined;
-  const options = ADULT_FRANCHISES.map((franchise): FranchiseOption => {
+): FranchiseOption[] {
+  if (isChild(person, year)) return [];
+  return ADULT_FRANCHISES.map((franchise) => {
     const premium = rappen(12 * MONTHLY_PREMIUM[franchise]);
     const costSharing = computeStatement({ ...person, franchise }, invoices, year).totals
       .patientShare;
     return { franchise, premium, costSharing, total: add(premium, costSharing) };
   });
-  return options.reduce((best, option) => (option.total < best.total ? option : best));
+}
+
+/** The option with the lowest yearly cost. A tie goes to the lower Franchise (first in the list). */
+export function cheapestOf(options: readonly FranchiseOption[]): FranchiseOption | undefined {
+  return options.reduce<FranchiseOption | undefined>(
+    (best, option) => (best && best.total <= option.total ? best : option),
+    undefined,
+  );
 }
