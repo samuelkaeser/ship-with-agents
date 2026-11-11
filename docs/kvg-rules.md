@@ -51,7 +51,7 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 
 21. **[implemented]** No cost sharing at all on the specific maternity services of KVG Art. 29 Abs. 2: check-ups during and after pregnancy, birth, midwife care, breastfeeding advice, care of the healthy newborn (KVG Art. 64 Abs. 7 lit. a).
 22. **[implemented]** From the 13th week of pregnancy, during birth, and until 8 weeks after birth, no cost sharing on any basic-insurance service, also for illnesses unrelated to the pregnancy (KVG Art. 64 Abs. 7 lit. b).
-23. **[implemented]** The doctor states the presumed start of week 13 on the invoice (KVV Art. 105 Abs. 1). A stillbirth after week 23 counts as birth (Abs. 2). The period ends on day 56 after birth at 24:00 (Abs. 3).
+23. **[implemented]** The doctor states the presumed start of week 13 on the invoice (KVV Art. 105 Abs. 1); the app does not do this per invoice, it stores the period on the insured person (teaching simplification: stored on the insured person). A stillbirth after week 23 counts as birth (Abs. 2). The period ends on day 56 after birth at 24:00 (Abs. 3).
     Example: woman in week 14, CHF 300 check-up and CHF 200 flu visit: all cost sharing 0. The same flu visit in week 10 is normal cost sharing.
 
 ### Franchisen-Vergleich **[not yet]**

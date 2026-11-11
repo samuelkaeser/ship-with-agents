@@ -44,7 +44,7 @@ The highest Selbstbehalt one person pays per calendar year: CHF 700 for adults, 
 _Avoid_: Limit, maximum, ceiling
 
 **Patient share**:
-The amount the insured person pays on an invoice: Franchise part plus Selbstbehalt part. The insurer share is the rest.
+The amount the insured person pays on an invoice: Franchise part plus Selbstbehalt part. The insurer share is the rest. 0 on an invoice that is exempt from cost sharing (a maternity service, or an invoice inside the maternity period).
 _Avoid_: Co-pay, out-of-pocket
 
 **Yearly statement**:
