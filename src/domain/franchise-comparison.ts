@@ -25,8 +25,12 @@ export interface FranchiseOption {
   costSharing: Rappen;
   /** premium + costSharing. */
   total: Rappen;
-  /** total minus the total of the person's current Franchise: negative means cheaper. */
-  differenceToCurrent: Rappen;
+  /**
+   * total minus the total of the person's current Franchise: negative means cheaper. Undefined when
+   * the stored Franchise is not one of the four levels (a child's Franchise 0 in a year the person
+   * is an adult): there is nothing to compare with.
+   */
+  differenceToCurrent: Rappen | undefined;
 }
 
 /**
@@ -46,11 +50,11 @@ export function compareFranchises(
       .patientShare;
     return { franchise, premium, costSharing, total: add(premium, costSharing) };
   });
-  // An adult's current Franchise is always one of the four levels.
+  // Usually an adult's current Franchise is one of the four levels. If not, nothing to compare.
   const current = options.find((option) => option.franchise === person.franchise);
   return options.map((option) => ({
     ...option,
-    differenceToCurrent: sub(option.total, current?.total ?? option.total),
+    differenceToCurrent: current ? sub(option.total, current.total) : undefined,
   }));
 }
 

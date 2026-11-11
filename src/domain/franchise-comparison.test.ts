@@ -71,6 +71,29 @@ describe('compare all four Franchise levels', () => {
   it('children have no Franchise choice, so no levels at all', () => {
     expect(compareFranchises(person('2019-04-01'), [invoice(francs(5000))], 2026)).toEqual([]);
   });
+
+  it('Kim Klein (child Franchise 0) is an adult in 2038: four levels, but no difference to a current Franchise', () => {
+    const kim: InsuredPerson = { ...person('2019-04-01'), franchise: 0 };
+    const options = compareFranchises(
+      kim,
+      [{ ...invoice(francs(5000)), treatmentDate: '2038-03-01' }],
+      2038,
+    );
+    expect(options.map((option) => option.franchise)).toEqual([300, 500, 1500, 2500]);
+    expect(options.map((option) => option.total)).toEqual([
+      francs(5810),
+      francs(5690),
+      francs(5870),
+      francs(6350),
+    ]);
+    expect(options.map((option) => option.differenceToCurrent)).toEqual([
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    ]);
+    expect(cheapestOf(options)?.franchise).toBe(500);
+  });
 });
 
 describe('cheapest Franchise', () => {

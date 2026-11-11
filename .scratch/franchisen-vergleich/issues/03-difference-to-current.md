@@ -2,7 +2,7 @@
 
 **What to build:** The table gets a column "Differenz zur aktuellen Franchise": per level the yearly cost minus the yearly cost of the person's current Franchise, written in words as "CHF 120.00 günstiger" or "CHF 60.00 teurer", and "aktuell" on the current row. Above the table, the sentence says what a switch would have saved ("Mit einer Franchise von CHF 500.00 hätte Erika Beispiel 2026 CHF 120.00 gespart.") or that the current Franchise already is the cheapest. The KVG rules doc marks the difference implemented.
 
-**Blocked by:** 02: Comparison table
+**Blocked by:** 02: All four Franchise levels side by side
 
 **Status:** done
 

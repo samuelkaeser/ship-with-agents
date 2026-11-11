@@ -84,6 +84,7 @@ interface PersonPageProps {
 }
 
 function differenceText(option: FranchiseOption, person: InsuredPerson): string {
+  if (option.differenceToCurrent === undefined) return '-';
   if (option.franchise === person.franchise) return 'aktuell';
   const amount = formatChf(rappen(Math.abs(option.differenceToCurrent)));
   if (option.differenceToCurrent === 0) return 'gleich teuer';
@@ -223,9 +224,11 @@ export function PersonPage({
             <p>Keine Rechnungen in {year}: verglichen werden nur die Prämien.</p>
           )}
           <p data-testid="franchise-saving">
-            {cheapest.differenceToCurrent === 0
-              ? 'Die aktuelle Franchise ist bereits die günstigste.'
-              : `Mit einer Franchise von ${formatChf(francs(cheapest.franchise))} hätte ${person.name} ${year} ${formatChf(rappen(-cheapest.differenceToCurrent))} gespart.`}
+            {cheapest.differenceToCurrent === undefined
+              ? `Ein Vergleich mit der aktuellen Franchise ist nicht möglich, weil ${person.name} keine Franchise für Erwachsene hinterlegt hat.`
+              : cheapest.differenceToCurrent === 0
+                ? 'Die aktuelle Franchise ist bereits die günstigste.'
+                : `Mit einer Franchise von ${formatChf(francs(cheapest.franchise))} hätte ${person.name} ${year} ${formatChf(rappen(-cheapest.differenceToCurrent))} gespart.`}
           </p>
           <table>
             <thead>

@@ -229,6 +229,21 @@ describe('Franchisen-Vergleich on the person page', () => {
     expect(html).toContain('Kinder haben keine Franchise-Wahl, darum gibt es keinen Vergleich.');
   });
 
+  it('Kim Klein in 2038 is an adult without adult Franchise: table and cheapest marked, no comparison with the current one', async () => {
+    const kim = seedPersons.find((p) => p.id === 'kim-klein')!;
+    const app = createApp(createStore([kim], []));
+    const html = await textOf(await app.request('/persons/kim-klein?year=2038'));
+    expect(html).toContain('Franchisen-Vergleich 2038');
+    expect(html).toMatch(/CHF 2'500\.00 \(günstigste\)/);
+    expect(html).toContain(
+      'Ein Vergleich mit der aktuellen Franchise ist nicht möglich, weil Kim Klein keine Franchise für Erwachsene hinterlegt hat.',
+    );
+    expect(html).not.toContain('Die aktuelle Franchise ist bereits die günstigste.');
+    expect(html).not.toContain('gleich teuer');
+    expect(html).not.toContain('aktuell</td>');
+    expect(html).not.toContain('gespart');
+  });
+
   it('says only premiums were compared in a year without invoices (Erika 2025)', async () => {
     const html = await textOf(await freshApp().request('/persons/erika-beispiel?year=2025'));
     expect(html).toContain('Keine Rechnungen in 2025: verglichen werden nur die Prämien.');
