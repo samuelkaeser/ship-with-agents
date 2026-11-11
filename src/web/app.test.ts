@@ -165,6 +165,57 @@ describe('maternity service', () => {
   });
 });
 
+describe('POST /persons/:id/maternity', () => {
+  const sendInvoice = (app: ReturnType<typeof freshApp>) =>
+    post(app, '/persons/erika-beispiel/invoices', {
+      treatmentDate: '2027-03-10',
+      invoiceDate: '2027-03-15',
+      amount: '200',
+      description: 'Grippe',
+    });
+
+  it('shows the recorded start on Sara Storch, her flu visit in week 14 is free', async () => {
+    const html = await textOf(await freshApp().request('/persons/sara-storch?year=2026'));
+    expect(html).toContain('Schwangerschaft: 13. Woche ab 2026-06-01');
+    expect(html).toContain('Mutterschaft, keine Kostenbeteiligung');
+  });
+
+  it('stores the start: invoices from that day on are free, then the page shows it', async () => {
+    const app = freshApp();
+    await sendInvoice(app);
+    const res = await post(app, '/persons/erika-beispiel/maternity', { week13Start: '2027-03-01' });
+    expect(res.status).toBe(303);
+    expect(res.headers.get('location')).toBe('/persons/erika-beispiel?year=2027');
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+    expect(html).toContain('13. Woche ab 2027-03-01');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 0\.00/);
+  });
+
+  it('a second submit replaces the first', async () => {
+    const app = freshApp();
+    await sendInvoice(app);
+    await post(app, '/persons/erika-beispiel/maternity', { week13Start: '2027-03-01' });
+    await post(app, '/persons/erika-beispiel/maternity', { week13Start: '2027-03-20' });
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+    expect(html).toContain('13. Woche ab 2027-03-20');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 200\.00/);
+  });
+
+  it('rejects an impossible date with a message and stores nothing', async () => {
+    const app = freshApp();
+    const res = await post(app, '/persons/erika-beispiel/maternity', { week13Start: '2027-02-30' });
+    expect(res.status).toBe(400);
+    expect(await textOf(res)).toContain('Beginn der 13. Woche ist ungültig.');
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2026'));
+    expect(html).not.toContain('13. Woche ab');
+  });
+
+  it('answers 404 for an unknown person', async () => {
+    const res = await post(freshApp(), '/persons/nobody/maternity', { week13Start: '2027-03-01' });
+    expect(res.status).toBe(404);
+  });
+});
+
 describe('GET /persons/:id?year=', () => {
   it.each(['abc', '-5', '2026.5', '20266'])('renders without a 500 for year=%s', async (year) => {
     const res = await freshApp().request(`/persons/erika-beispiel?year=${year}`);

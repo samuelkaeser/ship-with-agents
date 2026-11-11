@@ -64,7 +64,7 @@ export function computeStatement(
 
   for (const invoice of inYear) {
     // Exempt invoices use up neither Franchise nor cap.
-    const exemption = exemptionOf(invoice);
+    const exemption = exemptionOf(person, invoice);
     if (exemption) {
       lines.push({
         invoice,

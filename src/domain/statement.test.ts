@@ -253,3 +253,40 @@ describe('maternity service (KVG Art. 64 Abs. 7 lit. a)', () => {
     expect(totals.patientShare).toBe(francs(770));
   });
 });
+
+describe('maternity period from week 13 (KVG Art. 64 Abs. 7 lit. b)', () => {
+  const pregnant = { ...adult, maternity: { week13Start: '2026-06-01' } };
+
+  it('worked example F: in week 14 a CHF 300 check-up and a CHF 200 flu visit cost nothing', () => {
+    const { lines, totals } = computeStatement(
+      pregnant,
+      [invoice('a', '2026-06-09', francs(300)), invoice('b', '2026-06-10', francs(200))],
+      2026,
+    );
+    expect(lines.map((line) => line.patientShare)).toEqual([francs(0), francs(0)]);
+    expect(lines.map((line) => line.exemption)).toEqual(['maternityPeriod', 'maternityPeriod']);
+    expect(totals.insurerShare).toBe(francs(500));
+  });
+
+  it('worked example F: the same CHF 200 flu visit in week 10 is charged normally', () => {
+    const { lines } = computeStatement(pregnant, [invoice('a', '2026-05-12', francs(200))], 2026);
+    expect(lines[0]?.patientShare).toBe(francs(200));
+    expect(lines[0]?.exemption).toBeUndefined();
+  });
+
+  it('the first day of week 13 is free, the day before is charged', () => {
+    const { lines } = computeStatement(
+      pregnant,
+      [invoice('a', '2026-05-31', francs(100)), invoice('b', '2026-06-01', francs(100))],
+      2026,
+    );
+    expect(lines.map((line) => line.patientShare)).toEqual([francs(100), francs(0)]);
+  });
+
+  it('names the maternity service when the flag and the period both apply', () => {
+    const flagged = { ...invoice('a', '2026-06-09', francs(300)), maternityService: true };
+    expect(computeStatement(pregnant, [flagged], 2026).lines[0]?.exemption).toBe(
+      'maternityService',
+    );
+  });
+});

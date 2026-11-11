@@ -5,11 +5,18 @@ export type IsoDate = string;
 
 export type Franchise = 0 | 300 | 500 | 1500 | 2500;
 
+/** One pregnancy, as stated by the doctor (KVV Art. 105 Abs. 1). */
+export interface Maternity {
+  /** Presumed first day of week 13. */
+  week13Start: IsoDate;
+}
+
 export interface InsuredPerson {
   id: string;
   name: string;
   dateOfBirth: IsoDate;
   franchise: Franchise;
+  maternity?: Maternity;
 }
 
 export interface Invoice {

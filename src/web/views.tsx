@@ -9,6 +9,7 @@ export const INSURER_NAME = 'Krankenkasse light';
 
 const EXEMPTION_LABEL: Record<Exemption, string> = {
   maternityService: 'Mutterschaftsleistung, keine Kostenbeteiligung',
+  maternityPeriod: 'Mutterschaft, keine Kostenbeteiligung',
 };
 
 const css = `
@@ -146,6 +147,16 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
           </span>
         </label>
         <button type="submit">Rechnung speichern</button>
+      </form>
+
+      <h2>Mutterschaft</h2>
+      {person.maternity && <p>Schwangerschaft: 13. Woche ab {person.maternity.week13Start}.</p>}
+      <form method="post" action={`/persons/${person.id}/maternity`}>
+        <label>
+          Beginn der 13. Woche (laut Arzt)
+          <input type="date" name="week13Start" required />
+        </label>
+        <button type="submit">Schwangerschaft erfassen</button>
       </form>
 
       <h2>Kostenbeteiligung {year}</h2>

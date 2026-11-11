@@ -1,5 +1,5 @@
 import type { Rappen } from '../domain/money';
-import type { InsuredPerson, Invoice, IsoDate } from '../domain/types';
+import type { InsuredPerson, Invoice, IsoDate, Maternity } from '../domain/types';
 import { seedInvoices, seedPersons } from './seed';
 
 export interface NewInvoice {
@@ -16,6 +16,8 @@ export interface Store {
   getPerson(id: string): InsuredPerson | undefined;
   listInvoices(personId: string): Invoice[];
   addInvoice(input: NewInvoice): Invoice;
+  /** Records the maternity period of a person, replacing an earlier one. */
+  setMaternity(personId: string, maternity: Maternity): void;
 }
 
 /** In-memory store. Every call to createStore starts from a fresh copy of the seed data. */
@@ -35,6 +37,12 @@ export function createStore(
       const invoice: Invoice = { ...input, id };
       invoiceList.push(invoice);
       return invoice;
+    },
+    setMaternity(personId, maternity) {
+      // Replace the object, the seed persons are shared between stores.
+      const index = personList.findIndex((person) => person.id === personId);
+      const person = personList[index];
+      if (person) personList[index] = { ...person, maternity };
     },
   };
 }

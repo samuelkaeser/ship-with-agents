@@ -21,9 +21,15 @@ export function selbstbehaltCap(person: InsuredPerson, year: number): Rappen {
 }
 
 /** Why an invoice carries no cost sharing. */
-export type Exemption = 'maternityService';
+export type Exemption = 'maternityService' | 'maternityPeriod';
 
-/** No cost sharing on maternity services (KVG Art. 64 Abs. 7 lit. a). */
-export function exemptionOf(invoice: Invoice): Exemption | undefined {
-  return invoice.maternityService ? 'maternityService' : undefined;
+/**
+ * No cost sharing on maternity services (KVG Art. 64 Abs. 7 lit. a), and on every service from
+ * week 13 of the pregnancy on (KVG Art. 64 Abs. 7 lit. b, KVV Art. 105). The treatment date decides.
+ */
+export function exemptionOf(person: InsuredPerson, invoice: Invoice): Exemption | undefined {
+  if (invoice.maternityService) return 'maternityService';
+  const start = person.maternity?.week13Start;
+  if (start && invoice.treatmentDate >= start) return 'maternityPeriod';
+  return undefined;
 }

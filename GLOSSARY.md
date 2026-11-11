@@ -57,6 +57,10 @@ _Avoid_: Report, summary, bill
 An invoice the clerk marks as a specific maternity service (check-up, birth, midwife, breastfeeding advice, care of the healthy newborn, KVG Art. 29 Abs. 2). No cost sharing: patient share 0, and it uses up neither Franchise nor cap.
 _Avoid_: Pregnancy invoice, maternity invoice
 
+**Maternity period**:
+The time in which an insured person pays no cost sharing on any invoice, whatever it is for. It starts on the first day of week 13 of the pregnancy, as stated by the doctor (KVG Art. 64 Abs. 7 lit. b, KVV Art. 105). The treatment date decides whether an invoice is inside. One per insured person; recording it again replaces it.
+_Avoid_: Pregnancy, Mutterschaftsfrist
+
 ### People
 
 **Child** and **Adult**:

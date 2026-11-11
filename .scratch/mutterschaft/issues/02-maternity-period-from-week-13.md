@@ -4,15 +4,15 @@
 
 **Blocked by:** 01: Mark an invoice as maternity service
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Worked example F without the hospital days: week 14, CHF 300 check-up and CHF 200 flu visit all cost 0; the same CHF 200 flu visit in week 10 is charged normally
-- [ ] The first day of week 13 is exempt, the day before is charged
-- [ ] When both the flag and the period apply, the note names the flag
-- [ ] The page has a form for the start of week 13; a valid date is stored on the person, the page is shown again for that year and a second submit replaces the first
-- [ ] An impossible date is rejected with a German message and nothing is stored
-- [ ] The person page shows the recorded start
-- [ ] Glossary term "Maternity period" added, rule 22 marked implemented
-- [ ] `pnpm test`, `pnpm typecheck` and `pnpm exec prettier --check .` pass
+- [x] Worked example F without the hospital days: week 14, CHF 300 check-up and CHF 200 flu visit all cost 0; the same CHF 200 flu visit in week 10 is charged normally
+- [x] The first day of week 13 is exempt, the day before is charged
+- [x] When both the flag and the period apply, the note names the flag
+- [x] The page has a form for the start of week 13; a valid date is stored on the person, the page is shown again for that year and a second submit replaces the first
+- [x] An impossible date is rejected with a German message and nothing is stored
+- [x] The person page shows the recorded start
+- [x] Glossary term "Maternity period" added, rule 22 marked implemented
+- [x] `pnpm test`, `pnpm typecheck` and `pnpm exec prettier --check .` pass
 
 ## Comments

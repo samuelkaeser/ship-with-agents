@@ -68,6 +68,19 @@ export function createApp(store: Store) {
     return c.redirect(`/persons/${person.id}?year=${yearOf(text('treatmentDate'))}`, 303);
   });
 
+  app.post('/persons/:id/maternity', async (c) => {
+    const person = store.getPerson(c.req.param('id'));
+    if (!person) return c.notFound();
+
+    const form = await c.req.parseBody();
+    const week13Start = String(form.week13Start ?? '').trim();
+    if (!isValidDate(week13Start)) {
+      return c.html(renderPerson(person, undefined, ['Beginn der 13. Woche ist ungültig.']), 400);
+    }
+    store.setMaternity(person.id, { week13Start });
+    return c.redirect(`/persons/${person.id}?year=${yearOf(week13Start)}`, 303);
+  });
+
   function renderPerson(person: InsuredPerson, requestedYear?: number, errors: string[] = []) {
     const invoices = store.listInvoices(person.id);
     const invoiceYears = invoices
