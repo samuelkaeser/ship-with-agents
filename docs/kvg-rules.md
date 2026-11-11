@@ -39,13 +39,13 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 17. A drug cost counted at more than 10% only counts half of the excess toward the cap. At 40%, that is 30 points above the legal rate, so 15 points count toward the CHF 700 cap: 10 + 15 = 25% of the drug cost counts. The patient still pays the full 40% (KVV Art. 104a Abs. 2).
     Example: Franchise already met, original drug CHF 100, generic exists, no medical reason. Patient pays 40, counted toward the cap: 25. With a medical reason: patient pays 10, counted 10.
 
-### Spitalbeitrag **[not yet]**
+### Spitalbeitrag **[partly implemented]**
 
-18. CHF 15 per day of hospital stay for adults, no time limit (KVV Art. 104 Abs. 1). Charged in addition to Franchise and Selbstbehalt.
-19. Not charged for the day of discharge, nor for leave days (KVV Art. 104 Abs. 1bis).
+18. **[implemented]** CHF 15 per day of hospital stay for adults, no time limit (KVV Art. 104 Abs. 1). Charged in addition to Franchise and Selbstbehalt.
+19. Not charged for the day of discharge **[implemented]**, nor for leave days **[not yet]** (KVV Art. 104 Abs. 1bis).
 20. No Spitalbeitrag for children, young adults in education (up to 25), and women whose cost sharing is waived for maternity (KVV Art. 104 Abs. 2).
     Example: admitted Monday, discharged Saturday. Billable days Monday to Friday = 5, so 5 x 15 = CHF 75.
-    Inpatient stays: the canton pays at least 55% of the stay, the insurer the rest. The Selbstbehalt runs on the insurer's share only, the cantonal share is not billed to the insured (unverified reading). Open decision for the team: does the app take the insurer share as a direct input, or does it split the invoice into cantonal and insurer share itself?
+    Inpatient stays: the canton pays at least 55% of the stay, the insurer the rest. The Selbstbehalt runs on the insurer's share only, the cantonal share is not billed to the insured (unverified reading). Decision in the app: the invoice amount of a stay is the insurer share, entered directly. The app does not split off the cantonal share.
 
 ### Mutterschaft **[not yet]**
 
@@ -66,7 +66,7 @@ Numbers are from the research file. Single persons only. Each example is tagged 
 - **A. [implemented]** Adult, CHF 5,000 outpatient bill, nothing used yet: Franchise 300, excess 4,700, 10% = 470 (under 700). Patient pays 770, insurer 4,230.
 - **B. [implemented]** Cap reached: adult, CHF 20,000 total in the year. 300 + min(10% x 19,700 = 1,970; 700) = 1,000. Insurer 19,000. Edge: costs of exactly 7,300 give 300 + 700 = 1,000, and 7,301 also 1,000.
 - **C. [implemented]** Child (Franchise 0), CHF 5,000: no Franchise, 10% = 500, capped at 350. Patient pays 350. (The research variants with Franchise 600 and the sibling family cap are out of scope.)
-- **D. [not yet] (feature Spitalbeitrag)** Hospital: adult whose Franchise is already used up and who has paid no Selbstbehalt yet (the full cap room of CHF 700 is left); admitted Monday, discharged Saturday. Billable days Monday to Friday = 5 (discharge day free): 5 x 15 = 75. Insurer's share of the stay CHF 6,000: Selbstbehalt 600 (under the remaining cap). Patient pays 675. Assumption: the Selbstbehalt runs on the insurer's share (unverified).
+- **D. [implemented]** Hospital: adult, Franchise and cap used up except Selbstbehalt room of 700; admitted Monday, discharged Saturday. Billable days Monday to Friday = 5 (discharge day free): 5 x 15 = 75. Insurer's share of the stay CHF 6,000: Selbstbehalt 600 (under the remaining cap). Patient pays 675. Assumption: the Selbstbehalt runs on the insurer's share (unverified).
 - **E. [implemented]** Year boundary: adult, CHF 400 treatment on 20.12.2026, CHF 400 treatment on 8.1.2027, both invoiced 15.1.2027. December visit belongs to 2026: 300 + 10 = 310. January visit belongs to 2027 with a fresh Franchise: 300 + 10 = 310. Total 620, not the 350 you get by invoice date.
 - **F. [not yet] (feature Mutterschaft)** Woman in week 14, CHF 300 check-up and CHF 200 flu visit, 5 days hospital for the birth. All cost sharing 0, Spitalbeitrag 0. The same CHF 200 flu visit in week 10 is normal cost sharing.
 - **G. [not yet] (feature Medikamente with 40% Selbstbehalt)** Franchise already met, original drug CHF 100, generic exists, no medical reason: patient pays 40, counted toward the cap 10 + 15 = 25. With a medical reason: patient pays 10.

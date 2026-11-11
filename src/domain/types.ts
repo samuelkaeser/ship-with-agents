@@ -19,4 +19,6 @@ export interface Invoice {
   invoiceDate: IsoDate;
   amount: Rappen;
   description: string;
+  /** Set for a hospital stay: the Treatment date is the day of admission. */
+  dischargeDate?: IsoDate;
 }

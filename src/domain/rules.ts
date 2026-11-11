@@ -1,5 +1,5 @@
-import { francs, type Rappen } from './money';
-import type { InsuredPerson, IsoDate } from './types';
+import { francs, rappen, type Rappen } from './money';
+import type { InsuredPerson, Invoice, IsoDate } from './types';
 
 export const SELBSTBEHALT_PERCENT = 10; // KVG Art. 64 Abs. 2 lit. b
 
@@ -18,4 +18,16 @@ export function isChild(person: InsuredPerson, year: number): boolean {
 
 export function selbstbehaltCap(person: InsuredPerson, year: number): Rappen {
   return isChild(person, year) ? SELBSTBEHALT_CAP_CHILD : SELBSTBEHALT_CAP_ADULT;
+}
+
+export const SPITALBEITRAG_PER_DAY = francs(15); // KVV Art. 104 Abs. 1
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** Days from admission up to, not including, the day of discharge (KVV Art. 104 Abs. 1bis). 0 for outpatient. */
+export function billableHospitalDays(invoice: Invoice): number {
+  if (!invoice.dischargeDate) return 0;
+  const admitted = Date.parse(invoice.treatmentDate);
+  const discharged = Date.parse(invoice.dischargeDate);
+  return Math.max(0, Math.round((discharged - admitted) / DAY_MS));
 }

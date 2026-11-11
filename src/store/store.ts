@@ -8,6 +8,7 @@ export interface NewInvoice {
   invoiceDate: IsoDate;
   amount: Rappen;
   description: string;
+  dischargeDate?: IsoDate;
 }
 
 export interface Store {

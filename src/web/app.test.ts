@@ -151,3 +151,45 @@ describe('GET /persons/:id?year=', () => {
     expect(await textOf(res)).toContain('Erika Beispiel');
   });
 });
+
+describe('Spitalbeitrag', () => {
+  it('shows Sabine Spital: Monday to Saturday stay, 5 days, Spitalbeitrag 75, total 975', async () => {
+    const html = await textOf(await freshApp().request('/persons/sabine-spital?year=2026'));
+    expect(html).toContain('CHF 75.00');
+    expect(html).toContain('CHF 675.00');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 975\.00/);
+  });
+
+  it('stores a stay entered with a discharge date and charges 3 days x 15', async () => {
+    const app = freshApp();
+    const res = await post(app, '/persons/erika-beispiel/invoices', {
+      treatmentDate: '2027-02-01',
+      invoiceDate: '2027-02-10',
+      amount: '1000',
+      description: 'Klinik Aufenthalt',
+      dischargeDate: '2027-02-04',
+    });
+    expect(res.status).toBe(303);
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+    expect(html).toContain('CHF 45.00');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 415\.00/); // 300 + 70 + 45
+  });
+
+  it.each(['2027-02-01', '2027-01-31', '2027-02-30'])(
+    'rejects the discharge date %s and stores nothing',
+    async (dischargeDate) => {
+      const app = freshApp();
+      const res = await post(app, '/persons/erika-beispiel/invoices', {
+        treatmentDate: '2027-02-01',
+        invoiceDate: '2027-02-10',
+        amount: '1000',
+        description: 'Klinik Aufenthalt',
+        dischargeDate,
+      });
+      expect(res.status).toBe(400);
+      expect(await textOf(res)).toContain('Austrittsdatum ist ungültig');
+      const html = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+      expect(html).not.toContain('Klinik Aufenthalt');
+    },
+  );
+});

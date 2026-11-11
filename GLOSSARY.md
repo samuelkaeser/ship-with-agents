@@ -43,12 +43,16 @@ _Avoid_: Co-insurance, coinsurance
 The highest Selbstbehalt one person pays per calendar year: CHF 700 for adults, CHF 350 for children.
 _Avoid_: Limit, maximum, ceiling
 
+**Spitalbeitrag**:
+CHF 15 per billable day of a hospital stay, on top of Franchise and Selbstbehalt. It is not part of the Franchise and not subject to the cap. A stay is an invoice with a discharge date, the Treatment date is the day of admission. The billable days run from admission up to, not including, the discharge day.
+_Avoid_: Hospital fee, Verpflegungskosten
+
 **Patient share**:
-The amount the insured person pays on an invoice: Franchise part plus Selbstbehalt part. The insurer share is the rest.
+The amount the insured person pays on an invoice: Franchise part plus Selbstbehalt part plus Spitalbeitrag. The insurer share is the rest.
 _Avoid_: Co-pay, out-of-pocket
 
 **Yearly statement**:
-The result for one insured person and one calendar year: per invoice the patient share (Franchise part and Selbstbehalt part) and the insurer share, plus yearly totals and what is left of Franchise and cap.
+The result for one insured person and one calendar year: per invoice the patient share (Franchise part, Selbstbehalt part and Spitalbeitrag) and the insurer share, plus yearly totals and what is left of Franchise and cap.
 _Avoid_: Report, summary, bill
 
 ### People

@@ -48,9 +48,13 @@ export function createApp(store: Store) {
     const form = await c.req.parseBody();
     const text = (key: string) => String(form[key] ?? '').trim();
     const amount = parseChf(text('amount'));
+    const dischargeDate = text('dischargeDate');
     const errors: string[] = [];
     if (!isValidDate(text('treatmentDate'))) errors.push('Behandlungsdatum ist ungültig.');
     if (!isValidDate(text('invoiceDate'))) errors.push('Rechnungsdatum ist ungültig.');
+    if (dischargeDate && (!isValidDate(dischargeDate) || dischargeDate <= text('treatmentDate'))) {
+      errors.push('Austrittsdatum ist ungültig oder nicht nach dem Behandlungsdatum.');
+    }
     if (amount === undefined) errors.push('Betrag ungültig, z.B. 123.45');
     if (!text('description')) errors.push('Beschreibung fehlt.');
 
@@ -63,6 +67,7 @@ export function createApp(store: Store) {
       invoiceDate: text('invoiceDate'),
       amount,
       description: text('description'),
+      ...(dischargeDate && { dischargeDate }),
     });
     return c.redirect(`/persons/${person.id}?year=${yearOf(text('treatmentDate'))}`, 303);
   });

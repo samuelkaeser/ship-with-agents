@@ -8,6 +8,7 @@ export const seedPersons: InsuredPerson[] = [
   { id: 'max-muster', name: 'Max Muster', dateOfBirth: '1970-09-12', franchise: 300 },
   { id: 'anna-stichtag', name: 'Anna Stichtag', dateOfBirth: '1990-02-28', franchise: 300 },
   { id: 'kim-klein', name: 'Kim Klein', dateOfBirth: '2019-04-01', franchise: 0 },
+  { id: 'sabine-spital', name: 'Sabine Spital', dateOfBirth: '1975-03-14', franchise: 300 },
   { id: 'peter-sparfuchs', name: 'Peter Sparfuchs', dateOfBirth: '1978-11-23', franchise: 2500 },
 ];
 
@@ -36,6 +37,14 @@ export const seedInvoices: Invoice[] = [
 
   // Kim: a child, cap CHF 350
   inv('i08', 'kim-klein', '2026-04-14', '2026-04-30', francs(5000), 'Kinderspital, Abklärung'),
+
+  // Sabine: Franchise used up in January, then a stay Monday 7.9. to Saturday 12.9. (worked example D).
+  // The amount of a stay is the insurer's share of it. She pays 600 Selbstbehalt + 5 x 15 = 675.
+  inv('i11', 'sabine-spital', '2026-01-20', '2026-01-30', francs(300), 'Hausarzt'),
+  {
+    ...inv('i12', 'sabine-spital', '2026-09-07', '2026-09-20', francs(6000), 'Spital, Operation'),
+    dischargeDate: '2026-09-12',
+  },
 
   // Peter: high Franchise, barely above it
   inv(

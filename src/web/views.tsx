@@ -135,6 +135,10 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
           Beschreibung
           <input type="text" name="description" required />
         </label>
+        <label>
+          Austrittsdatum (nur bei Spitalaufenthalt)
+          <input type="date" name="dischargeDate" />
+        </label>
         <button type="submit">Rechnung speichern</button>
       </form>
 
@@ -158,6 +162,8 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
             <th class="num">Betrag</th>
             <th class="num">Franchise</th>
             <th class="num">Selbstbehalt</th>
+            <th class="num">Spitaltage</th>
+            <th class="num">Spitalbeitrag</th>
             <th class="num">Patient zahlt</th>
             <th class="num">Kasse zahlt</th>
           </tr>
@@ -170,6 +176,8 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
               <td class="num">{formatChf(line.invoice.amount)}</td>
               <td class="num">{formatChf(line.franchisePart)}</td>
               <td class="num">{formatChf(line.selbstbehaltPart)}</td>
+              <td class="num">{line.billableDays || '–'}</td>
+              <td class="num">{formatChf(line.spitalbeitrag)}</td>
               <td class="num">{formatChf(line.patientShare)}</td>
               <td class="num">{formatChf(line.insurerShare)}</td>
             </tr>
@@ -181,6 +189,8 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
             <td class="num">{formatChf(totals.invoiced)}</td>
             <td class="num">{formatChf(totals.franchisePart)}</td>
             <td class="num">{formatChf(totals.selbstbehaltPart)}</td>
+            <td></td>
+            <td class="num">{formatChf(totals.spitalbeitrag)}</td>
             <td class="num" data-testid="patient-total">
               {formatChf(totals.patientShare)}
             </td>

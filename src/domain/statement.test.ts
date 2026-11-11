@@ -228,3 +228,85 @@ describe('Selbstbehalt rounding', () => {
     expect(totals.selbstbehaltPart).toBe(rappen(0));
   });
 });
+
+describe('worked example D: Spitalbeitrag', () => {
+  const stay = (
+    id: string,
+    treatmentDate: string,
+    dischargeDate: string,
+    amount: Rappen,
+  ): Invoice => ({ ...invoice(id, treatmentDate, amount), dischargeDate });
+
+  it('Monday to Saturday, Franchise used up: Selbstbehalt 600 + 5 days x 15 = patient pays 675', () => {
+    const { lines } = computeStatement(
+      adult,
+      [
+        invoice('early', '2026-01-20', francs(300)),
+        stay('stay', '2026-09-07', '2026-09-12', francs(6000)),
+      ],
+      2026,
+    );
+    expect(lines[1]).toMatchObject({
+      billableDays: 5,
+      selbstbehaltPart: francs(600),
+      spitalbeitrag: francs(75),
+      patientShare: francs(675),
+      insurerShare: francs(5325),
+    });
+  });
+
+  it('does not bill the day of discharge: one night is 1 day', () => {
+    const { lines } = computeStatement(
+      adult,
+      [stay('a', '2026-09-07', '2026-09-08', francs(1000))],
+      2026,
+    );
+    expect(lines[0]?.billableDays).toBe(1);
+    expect(lines[0]?.spitalbeitrag).toBe(francs(15));
+  });
+
+  it('is charged on top of the capped Selbstbehalt: at the cap, the stay still costs 15 a day', () => {
+    const { lines, totals } = computeStatement(
+      adult,
+      [
+        invoice('big', '2026-01-10', francs(20000)),
+        stay('stay', '2026-09-07', '2026-09-10', francs(2000)),
+      ],
+      2026,
+    );
+    expect(lines[1]?.selbstbehaltPart).toBe(francs(0));
+    expect(lines[1]?.spitalbeitrag).toBe(francs(45));
+    expect(totals.spitalbeitrag).toBe(francs(45));
+    expect(totals.patientShare).toBe(francs(1045));
+  });
+
+  it('does not use up Franchise or cap room', () => {
+    const { franchiseLeft, capLeft } = computeStatement(
+      adult,
+      [stay('a', '2026-09-07', '2026-09-12', francs(100))],
+      2026,
+    );
+    expect(franchiseLeft).toBe(francs(200));
+    expect(capLeft).toBe(francs(700));
+  });
+
+  it('never exceeds what is left of the invoice: insurer share stays 0, not negative', () => {
+    const { lines } = computeStatement(
+      adult,
+      [stay('a', '2026-01-01', '2026-03-01', francs(100))],
+      2026,
+    );
+    expect(lines[0]?.spitalbeitrag).toBe(francs(0));
+    expect(lines[0]?.insurerShare).toBe(francs(0));
+  });
+
+  it('an invoice without discharge date has no Spitalbeitrag', () => {
+    const { lines, totals } = computeStatement(
+      adult,
+      [invoice('a', '2026-03-01', francs(5000))],
+      2026,
+    );
+    expect(lines[0]).toMatchObject({ billableDays: 0, spitalbeitrag: francs(0) });
+    expect(totals.spitalbeitrag).toBe(francs(0));
+  });
+});

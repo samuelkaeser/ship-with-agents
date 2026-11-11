@@ -1,11 +1,19 @@
-import { ZERO, add, francs, min, percentRoundHalfUp, sub, type Rappen } from './money';
-import { SELBSTBEHALT_PERCENT, selbstbehaltCap, yearOf } from './rules';
+import { ZERO, add, francs, min, percentRoundHalfUp, rappen, sub, type Rappen } from './money';
+import {
+  SELBSTBEHALT_PERCENT,
+  SPITALBEITRAG_PER_DAY,
+  billableHospitalDays,
+  selbstbehaltCap,
+  yearOf,
+} from './rules';
 import type { InsuredPerson, Invoice } from './types';
 
 export interface StatementLine {
   invoice: Invoice;
   franchisePart: Rappen;
   selbstbehaltPart: Rappen;
+  billableDays: number;
+  spitalbeitrag: Rappen;
   patientShare: Rappen;
   insurerShare: Rappen;
 }
@@ -17,6 +25,7 @@ export interface Statement {
     invoiced: Rappen;
     franchisePart: Rappen;
     selbstbehaltPart: Rappen;
+    spitalbeitrag: Rappen;
     patientShare: Rappen;
     insurerShare: Rappen;
   };
@@ -32,6 +41,8 @@ export interface Statement {
  * - Franchise first (KVG Art. 64 Abs. 2 lit. a), then 10% Selbstbehalt on the rest
  *   (KVG Art. 64 Abs. 2 lit. b), capped per year (KVV Art. 103 Abs. 2).
  * - The Selbstbehalt is rounded half up to the whole Rappen per invoice.
+ * - A hospital stay adds CHF 15 per billable day on top (KVV Art. 104 Abs. 1). It is not part of
+ *   the Franchise or the cap, and it never exceeds what is left of the invoice.
  */
 export function computeStatement(
   person: InsuredPerson,
@@ -62,11 +73,18 @@ export function computeStatement(
     );
     franchiseLeft = sub(franchiseLeft, franchisePart);
     capLeft = sub(capLeft, selbstbehaltPart);
-    const patientShare = add(franchisePart, selbstbehaltPart);
+    const billableDays = billableHospitalDays(invoice);
+    const spitalbeitrag = min(
+      rappen(billableDays * SPITALBEITRAG_PER_DAY),
+      sub(sub(invoice.amount, franchisePart), selbstbehaltPart),
+    );
+    const patientShare = add(add(franchisePart, selbstbehaltPart), spitalbeitrag);
     lines.push({
       invoice,
       franchisePart,
       selbstbehaltPart,
+      billableDays,
+      spitalbeitrag,
       patientShare,
       insurerShare: sub(invoice.amount, patientShare),
     });
@@ -82,6 +100,7 @@ export function computeStatement(
       invoiced: sum((line) => line.invoice.amount),
       franchisePart: sum((line) => line.franchisePart),
       selbstbehaltPart: sum((line) => line.selbstbehaltPart),
+      spitalbeitrag: sum((line) => line.spitalbeitrag),
       patientShare: sum((line) => line.patientShare),
       insurerShare: sum((line) => line.insurerShare),
     },
