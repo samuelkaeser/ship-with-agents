@@ -51,6 +51,10 @@ _Avoid_: Hospital fee, Verpflegungskosten
 A day of a hospital stay the patient spent away on leave. It is not billed. The invoice only carries the count, not the dates.
 _Avoid_: Absence day, Beurlaubung (as a code term)
 
+**In education**:
+A flag on the insured person (`inEducation`, set in seed data only, default no). A young adult in education pays no Spitalbeitrag up to age 25 (same year-difference age as Child).
+_Avoid_: Student (as a code term), Apprentice
+
 **Patient share**:
 The amount the insured person pays on an invoice: Franchise part plus Selbstbehalt part plus Spitalbeitrag. The insurer share is the rest.
 _Avoid_: Co-pay, out-of-pocket

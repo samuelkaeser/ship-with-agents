@@ -194,6 +194,18 @@ describe('Spitalbeitrag leave days', () => {
     expect(html).toContain('CHF 75.00');
   });
 
+  it('rejects leave days without a discharge date and stores nothing', async () => {
+    const app = freshApp();
+    const res = await post(app, '/persons/erika-beispiel/invoices', {
+      ...stay('2'),
+      dischargeDate: '',
+    });
+    expect(res.status).toBe(400);
+    expect(await textOf(res)).toContain('Urlaubstage gehören nur zu einem Aufenthalt');
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+    expect(html).not.toContain('Klinik Aufenthalt');
+  });
+
   it.each(['-1', '1.5', 'abc'])('rejects the leave days %s and stores nothing', async (days) => {
     const app = freshApp();
     const res = await post(app, '/persons/erika-beispiel/invoices', stay(days));

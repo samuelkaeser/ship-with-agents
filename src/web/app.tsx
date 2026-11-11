@@ -59,6 +59,9 @@ export function createApp(store: Store) {
     if (leaveDays && !/^\d{1,3}$/.test(leaveDays)) {
       errors.push('Urlaubstage müssen eine ganze Zahl ab 0 sein.');
     }
+    if (leaveDays && !dischargeDate) {
+      errors.push('Urlaubstage gehören nur zu einem Aufenthalt: bitte ein Austrittsdatum angeben.');
+    }
     if (amount === undefined) errors.push('Betrag ungültig, z.B. 123.45');
     if (!text('description')) errors.push('Beschreibung fehlt.');
 

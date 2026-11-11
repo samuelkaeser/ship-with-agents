@@ -76,9 +76,10 @@ export function computeStatement(
     );
     franchiseLeft = sub(franchiseLeft, franchisePart);
     capLeft = sub(capLeft, selbstbehaltPart);
-    const billableDays = billableHospitalDays(invoice);
+    // An exempt person has no billed days at all (KVV Art. 104 Abs. 2).
+    const billableDays = exempt ? 0 : billableHospitalDays(invoice);
     const spitalbeitrag = min(
-      rappen(exempt ? 0 : billableDays * SPITALBEITRAG_PER_DAY),
+      rappen(billableDays * SPITALBEITRAG_PER_DAY),
       sub(sub(invoice.amount, franchisePart), selbstbehaltPart),
     );
     const patientShare = add(add(franchisePart, selbstbehaltPart), spitalbeitrag);
