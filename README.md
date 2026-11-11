@@ -4,10 +4,10 @@ Vorlage für den ETH-Workshop "How to ship reliable software with AI agents" (17
 
 So startest du:
 
-1. Oben auf **Use this template** klicken und ein eigenes Repository erstellen.
+1. Oben auf **Use this template** klicken und ein eigenes Repository erstellen. Dabei **Include all branches** ankreuzen, sonst fehlen die Lösungs-Branches.
 2. In deinem Repository: **Code** → **Codespaces** → **Create codespace on main**. Das Einrichten dauert ein paar Minuten.
-3. Im Terminal des Codespace `./setup-key.sh` ausführen und den Schlüssel vom Zettel einfügen. Das muss vor dem ersten `claude` passieren.
-4. `claude` tippen. Fertig.
+3. Im Terminal des Codespace `./setup-key.sh` ausführen und euren Schlüssel einfügen (er bleibt beim Einfügen unsichtbar, das ist normal). Das muss vor dem ersten `claude` passieren.
+4. `claude` tippen, und zwar im Hauptordner des Repos. Fertig.
 
 Wenn der Schlüssel abgelehnt wird: `./setup-key.sh` nochmals ausführen, sonst die Workshop-Leitung fragen.
 
@@ -34,10 +34,18 @@ Beim Commit laufen Prettier, Typenprüfung und Tests automatisch. Schlägt etwas
 
 Ihr arbeitet zu zweit an einer Feature-Karte. Jeder Schritt ist ein Befehl in Claude Code:
 
-1. `/grill-with-docs`: Der Agent befragt euch zur Karte, bis alle offenen Punkte geklärt sind. Antworten kommen von euch, Wissen zu den Regeln steht in `docs/kvg-rules.md`.
-2. `/to-spec`: Aus dem Gespräch wird eine Spec in `.scratch/<feature>/spec.md`.
-3. `/to-tickets`: Die Spec wird in kleine Tickets zerlegt, eines pro Datei in `.scratch/<feature>/issues/`.
-4. `/implement`: Der Agent setzt ein Ticket um, Test zuerst, dann Code.
-5. `/code-review`: Der Agent prüft die Änderungen gegen die Regeln und die Spec.
+1. Im Terminal (nicht in Claude) einen Branch anlegen: `git switch -c feature/<name>`. Ohne Branch hat das Review am Schluss nichts zu vergleichen.
+2. `/grill-with-docs`: Der Agent befragt euch zur Karte, bis alle offenen Punkte geklärt sind. Antworten kommen von euch, Wissen zu den Regeln steht in `docs/kvg-rules.md`.
+3. `/to-spec`: Aus dem Gespräch wird eine Spec in `.scratch/<feature>/spec.md`.
+4. `/to-tickets`: Die Spec wird in kleine Tickets zerlegt, eines pro Datei in `.scratch/<feature>/issues/`.
+5. `/implement`: Der Agent setzt ein Ticket um, Test zuerst, dann Code.
+6. `/clear`, dann `/code-review main`: Ein frischer Agent prüft den ganzen Branch gegen die Regeln und die Spec. Nehmt den Eintrag mit `(project)`, nicht `/review`.
 
 Ihr entscheidet, der Agent schreibt den Code.
+
+## Wenn ihr feststeckt
+
+Zu jeder Karte gibt es eine Referenz. Schaut erst hinein, wenn ihr es selber versucht habt.
+
+- Tickets zu gross geraten: Referenz-Spec und Referenz-Tickets holen mit `git checkout origin/reference -- features/reference/<feature>` und nach `.scratch/<feature>/` kopieren.
+- Umsetzung hängt: Der Branch `solution/<feature>` hat einen Commit pro Ticket. Ansehen mit `git log origin/solution/<feature>` und `git show <commit>`.
