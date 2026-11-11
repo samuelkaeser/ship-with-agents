@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { rappen } from '../domain/money';
+import { seedInvoices, seedPersons } from '../store/seed';
 import { createStore } from '../store/store';
 import { createApp } from './app';
 
@@ -185,6 +187,41 @@ describe('Franchisen-Vergleich on the person page', () => {
     expect(html).toContain('Franchisen-Vergleich 2027');
     expect(html).toMatch(/CHF 2'500\.00 \(günstigste\)/);
     expect(html).toContain("CHF 3'600.00");
+  });
+
+  it('shows the difference to the current Franchise 300 for Erika 2026', async () => {
+    const html = await textOf(await freshApp().request('/persons/erika-beispiel?year=2026'));
+    expect(html).toContain('CHF 120.00 günstiger');
+    expect(html).toContain('CHF 60.00 teurer');
+    expect(html).toContain('CHF 540.00 teurer');
+    expect(html).toContain('aktuell');
+    expect(html).toMatch(
+      /data-testid="franchise-saving">\s*Mit einer Franchise von CHF 500\.00 hätte Erika Beispiel 2026 CHF 120\.00 gespart\./,
+    );
+  });
+
+  it('says what Peter Sparfuchs (current 2500) would have saved with 500 in 2026: CHF 660', async () => {
+    const html = await textOf(await freshApp().request('/persons/peter-sparfuchs?year=2026'));
+    expect(html).toContain(
+      'Mit einer Franchise von CHF 500.00 hätte Peter Sparfuchs 2026 CHF 660.00 gespart.',
+    );
+  });
+
+  it('says so when the current Franchise already is the cheapest', async () => {
+    const erika = { ...seedPersons[0]!, franchise: 500 as const };
+    const app = createApp(createStore([erika], seedInvoices));
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2026'));
+    expect(html).toContain('Die aktuelle Franchise ist bereits die günstigste.');
+    expect(html).not.toContain('gespart');
+  });
+
+  it('says no saving when the current Franchise 2500 ties with the cheapest 500', async () => {
+    const tied = { ...seedPersons[0]!, franchise: 2500 as const };
+    const bill = { ...seedInvoices[0]!, amount: rappen(176667) };
+    const app = createApp(createStore([tied], [bill]));
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2026'));
+    expect(html).toContain('Die aktuelle Franchise ist bereits die günstigste.');
+    expect(html).not.toContain('gespart');
   });
 
   it('shows no comparison for the child Kim Klein', async () => {

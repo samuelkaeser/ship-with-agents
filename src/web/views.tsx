@@ -1,6 +1,6 @@
 import { raw } from 'hono/html';
 import type { PropsWithChildren } from 'hono/jsx';
-import { formatChf, francs } from '../domain/money';
+import { formatChf, francs, rappen } from '../domain/money';
 import { cheapestOf, type FranchiseOption } from '../domain/franchise-comparison';
 import { isChild, selbstbehaltCap } from '../domain/rules';
 import type { Statement } from '../domain/statement';
@@ -81,6 +81,13 @@ interface PersonPageProps {
   comparison: FranchiseOption[];
   years: number[];
   errors?: string[];
+}
+
+function differenceText(option: FranchiseOption, person: InsuredPerson): string {
+  if (option.franchise === person.franchise) return 'aktuell';
+  const amount = formatChf(rappen(Math.abs(option.differenceToCurrent)));
+  if (option.differenceToCurrent === 0) return 'gleich teuer';
+  return option.differenceToCurrent < 0 ? `${amount} günstiger` : `${amount} teurer`;
 }
 
 export function PersonPage({
@@ -212,6 +219,11 @@ export function PersonPage({
       {cheapest && (
         <>
           <h2>Franchisen-Vergleich {year}</h2>
+          <p data-testid="franchise-saving">
+            {cheapest.differenceToCurrent === 0
+              ? 'Die aktuelle Franchise ist bereits die günstigste.'
+              : `Mit einer Franchise von ${formatChf(francs(cheapest.franchise))} hätte ${person.name} ${year} ${formatChf(rappen(-cheapest.differenceToCurrent))} gespart.`}
+          </p>
           <table>
             <thead>
               <tr>
@@ -219,6 +231,7 @@ export function PersonPage({
                 <th class="num">Prämie (12 Monate)</th>
                 <th class="num">Kostenbeteiligung</th>
                 <th class="num">Jahreskosten</th>
+                <th class="num">Differenz zur aktuellen Franchise</th>
               </tr>
             </thead>
             <tbody>
@@ -231,6 +244,7 @@ export function PersonPage({
                   <td class="num">{formatChf(option.premium)}</td>
                   <td class="num">{formatChf(option.costSharing)}</td>
                   <td class="num">{formatChf(option.total)}</td>
+                  <td class="num">{differenceText(option, person)}</td>
                 </tr>
               ))}
             </tbody>

@@ -38,12 +38,34 @@ describe('compare all four Franchise levels', () => {
 
   it('splits each level into 12 premiums and the cost sharing of the yearly statement', () => {
     const [first] = compareFranchises(adult, [invoice(francs(5000))], 2026);
-    expect(first).toEqual({
+    expect(first).toMatchObject({
       franchise: 300,
       premium: francs(5040),
       costSharing: francs(770),
       total: francs(5810),
     });
+  });
+
+  it('differences to the current Franchise 300: 0, -120, +60, +540 (Erika, CHF 5,000 bill)', () => {
+    const options = compareFranchises(adult, [invoice(francs(5000))], 2026);
+    expect(options.map((option) => option.differenceToCurrent)).toEqual([
+      francs(0),
+      francs(-120),
+      francs(60),
+      francs(540),
+    ]);
+  });
+
+  it('measures against the current Franchise of the person: from 2500, level 500 is 660 cheaper', () => {
+    // 2,800 of invoices: 2500 gives 3,600 + 2,500 + 30 = 6,130, 500 gives 4,740 + 500 + 230 = 5,470
+    const saver = { ...adult, franchise: 2500 as const };
+    const invoices = [invoice(francs(2200)), { ...invoice(francs(600)), id: 'i2' }];
+    const options = compareFranchises(saver, invoices, 2026);
+    expect(options.find((option) => option.franchise === 2500)?.total).toBe(francs(6130));
+    expect(options.find((option) => option.franchise === 500)?.total).toBe(francs(5470));
+    expect(options.find((option) => option.franchise === 500)?.differenceToCurrent).toBe(
+      francs(-660),
+    );
   });
 
   it('children have no Franchise choice, so no levels at all', () => {
@@ -54,7 +76,7 @@ describe('compare all four Franchise levels', () => {
 describe('cheapest Franchise', () => {
   it('worked example H: CHF 5,000 bill, 500 wins with 4,740 premium + 950 cost sharing', () => {
     // 300: 5,040 + 770 = 5,810 / 500: 4,740 + 950 = 5,690 / 1500: 4,020 + 1,850 = 5,870 / 2500: 3,600 + 2,750 = 6,350
-    expect(cheapestFranchise(adult, [invoice(francs(5000))], 2026)).toEqual({
+    expect(cheapestFranchise(adult, [invoice(francs(5000))], 2026)).toMatchObject({
       franchise: 500,
       premium: francs(4740),
       costSharing: francs(950),

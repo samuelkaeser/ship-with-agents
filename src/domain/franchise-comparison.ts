@@ -1,4 +1,4 @@
-import { add, francs, rappen, type Rappen } from './money';
+import { add, francs, rappen, sub, type Rappen } from './money';
 import { isChild } from './rules';
 import { computeStatement } from './statement';
 import type { Franchise, InsuredPerson, Invoice } from './types';
@@ -25,6 +25,8 @@ export interface FranchiseOption {
   costSharing: Rappen;
   /** premium + costSharing. */
   total: Rappen;
+  /** total minus the total of the person's current Franchise: negative means cheaper. */
+  differenceToCurrent: Rappen;
 }
 
 /**
@@ -38,12 +40,18 @@ export function compareFranchises(
   year: number,
 ): FranchiseOption[] {
   if (isChild(person, year)) return [];
-  return ADULT_FRANCHISES.map((franchise) => {
+  const options = ADULT_FRANCHISES.map((franchise) => {
     const premium = rappen(12 * MONTHLY_PREMIUM[franchise]);
     const costSharing = computeStatement({ ...person, franchise }, invoices, year).totals
       .patientShare;
     return { franchise, premium, costSharing, total: add(premium, costSharing) };
   });
+  // An adult's current Franchise is always one of the four levels.
+  const current = options.find((option) => option.franchise === person.franchise);
+  return options.map((option) => ({
+    ...option,
+    differenceToCurrent: sub(option.total, current?.total ?? option.total),
+  }));
 }
 
 /** The option with the lowest yearly cost. A tie goes to the lower Franchise (first in the list). */
