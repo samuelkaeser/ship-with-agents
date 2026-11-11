@@ -24,12 +24,12 @@ export const SPITALBEITRAG_PER_DAY = francs(15); // KVV Art. 104 Abs. 1
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** Days from admission up to, not including, the day of discharge (KVV Art. 104 Abs. 1bis). 0 for outpatient. */
+/** Days from admission up to, not including, the day of discharge, minus leave days (KVV Art. 104 Abs. 1bis). 0 for outpatient. */
 export function billableHospitalDays(invoice: Invoice): number {
   if (!invoice.dischargeDate) return 0;
   const admitted = Date.parse(invoice.treatmentDate);
   const discharged = Date.parse(invoice.dischargeDate);
-  return Math.max(0, Math.round((discharged - admitted) / DAY_MS));
+  return Math.max(0, Math.round((discharged - admitted) / DAY_MS) - (invoice.leaveDays ?? 0));
 }
 
 /** KVV Art. 104 Abs. 2: no Spitalbeitrag for children and young adults in education up to 25. */

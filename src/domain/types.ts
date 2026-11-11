@@ -23,4 +23,6 @@ export interface Invoice {
   description: string;
   /** Set for a hospital stay: the Treatment date is the day of admission. */
   dischargeDate?: IsoDate;
+  /** Leave days during the stay, not billed. Only the count is known. */
+  leaveDays?: number;
 }

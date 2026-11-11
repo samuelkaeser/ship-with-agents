@@ -171,12 +171,44 @@ describe('Spitalbeitrag exemptions', () => {
   });
 });
 
+describe('Spitalbeitrag leave days', () => {
+  const stay = (leaveDays: string) => ({
+    treatmentDate: '2027-02-01',
+    invoiceDate: '2027-02-10',
+    amount: '1000',
+    description: 'Klinik Aufenthalt',
+    dischargeDate: '2027-02-08',
+    leaveDays,
+  });
+
+  it('Sabine has a second stay of 7 days with 2 leave days: 5 days, 175 for the stay', async () => {
+    const html = await textOf(await freshApp().request('/persons/sabine-spital?year=2026'));
+    expect(html).toContain('CHF 175.00');
+    expect(html).toMatch(/data-testid="patient-total">\s*CHF 1'150\.00/);
+  });
+
+  it('subtracts the leave days entered in the form: 7 days - 2 = 5 x 15 = 75', async () => {
+    const app = freshApp();
+    expect((await post(app, '/persons/erika-beispiel/invoices', stay('2'))).status).toBe(303);
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+    expect(html).toContain('CHF 75.00');
+  });
+
+  it.each(['-1', '1.5', 'abc'])('rejects the leave days %s and stores nothing', async (days) => {
+    const app = freshApp();
+    const res = await post(app, '/persons/erika-beispiel/invoices', stay(days));
+    expect(res.status).toBe(400);
+    expect(await textOf(res)).toContain('Urlaubstage müssen eine ganze Zahl ab 0 sein');
+    const html = await textOf(await app.request('/persons/erika-beispiel?year=2027'));
+    expect(html).not.toContain('Klinik Aufenthalt');
+  });
+});
+
 describe('Spitalbeitrag', () => {
-  it('shows Sabine Spital: Monday to Saturday stay, 5 days, Spitalbeitrag 75, total 975', async () => {
+  it('shows Sabine Spital: Monday to Saturday stay, 5 days, Spitalbeitrag 75, patient pays 675', async () => {
     const html = await textOf(await freshApp().request('/persons/sabine-spital?year=2026'));
     expect(html).toContain('CHF 75.00');
     expect(html).toContain('CHF 675.00');
-    expect(html).toMatch(/data-testid="patient-total">\s*CHF 975\.00/);
   });
 
   it('stores a stay entered with a discharge date and charges 3 days x 15', async () => {

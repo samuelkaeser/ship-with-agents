@@ -9,6 +9,7 @@ export interface NewInvoice {
   amount: Rappen;
   description: string;
   dischargeDate?: IsoDate;
+  leaveDays?: number;
 }
 
 export interface Store {

@@ -53,6 +53,20 @@ export const seedInvoices: Invoice[] = [
     dischargeDate: '2026-09-12',
   },
 
+  // Sabine again: 7 days with 2 leave days bill 5 days, Selbstbehalt is down to the 100 cap room left
+  {
+    ...inv(
+      'i15',
+      'sabine-spital',
+      '2026-11-02',
+      '2026-11-20',
+      francs(3000),
+      'Spital, Nachbehandlung',
+    ),
+    dischargeDate: '2026-11-09',
+    leaveDays: 2,
+  },
+
   // Kim (child) and Lena (22, in education) each have a stay but pay no Spitalbeitrag
   {
     ...inv(

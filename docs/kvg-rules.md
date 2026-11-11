@@ -39,10 +39,10 @@ Status marks: **[implemented]** is in the base app. **[not yet]** is not in the 
 17. A drug cost counted at more than 10% only counts half of the excess toward the cap. At 40%, that is 30 points above the legal rate, so 15 points count toward the CHF 700 cap: 10 + 15 = 25% of the drug cost counts. The patient still pays the full 40% (KVV Art. 104a Abs. 2).
     Example: Franchise already met, original drug CHF 100, generic exists, no medical reason. Patient pays 40, counted toward the cap: 25. With a medical reason: patient pays 10, counted 10.
 
-### Spitalbeitrag **[partly implemented]**
+### Spitalbeitrag **[implemented]**
 
 18. **[implemented]** CHF 15 per day of hospital stay for adults, no time limit (KVV Art. 104 Abs. 1). Charged in addition to Franchise and Selbstbehalt.
-19. Not charged for the day of discharge **[implemented]**, nor for leave days **[not yet]** (KVV Art. 104 Abs. 1bis).
+19. Not charged for the day of discharge **[implemented]**, nor for leave days **[implemented]** (entered as a count on the invoice) (KVV Art. 104 Abs. 1bis).
 20. No Spitalbeitrag for children **[implemented]**, young adults in education up to 25 **[implemented]**, and women whose cost sharing is waived for maternity **[not yet]**, that part belongs to Mutterschaft (KVV Art. 104 Abs. 2). "In education" is a flag on the insured person, set in seed data only.
     Example: admitted Monday, discharged Saturday. Billable days Monday to Friday = 5, so 5 x 15 = CHF 75.
     Inpatient stays: the canton pays at least 55% of the stay, the insurer the rest. The Selbstbehalt runs on the insurer's share only, the cantonal share is not billed to the insured (unverified reading). Decision in the app: the invoice amount of a stay is the insurer share, entered directly. The app does not split off the cantonal share.

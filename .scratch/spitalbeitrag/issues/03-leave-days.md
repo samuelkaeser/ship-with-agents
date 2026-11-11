@@ -4,11 +4,11 @@
 
 **Blocked by:** 01: Spitalbeitrag for an adult's hospital stay
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Stay of 7 days with 2 leave days bills 5 days, Spitalbeitrag 75
-- [ ] Leave days equal to or above the stay length bill 0 days and Spitalbeitrag 0
-- [ ] A stay without leave days is unchanged
-- [ ] Form field "Urlaubstage" accepts 0 or a whole number, rejects "-1", "1.5" and "abc" with a German error and stores nothing
-- [ ] Seed stay with leave days is visible in the running app
-- [ ] Glossary has the leave day, rule sheet marks rule 19 and the Spitalbeitrag section as implemented
+- [x] Stay of 7 days with 2 leave days bills 5 days, Spitalbeitrag 75
+- [x] Leave days equal to or above the stay length bill 0 days and Spitalbeitrag 0
+- [x] A stay without leave days is unchanged
+- [x] Form field "Urlaubstage" accepts 0 or a whole number, rejects "-1", "1.5" and "abc" with a German error and stores nothing
+- [x] Seed stay with leave days is visible in the running app
+- [x] Glossary has the leave day, rule sheet marks rule 19 and the Spitalbeitrag section as implemented

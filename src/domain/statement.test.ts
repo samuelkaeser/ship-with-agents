@@ -311,6 +311,27 @@ describe('worked example D: Spitalbeitrag', () => {
   });
 });
 
+describe('Spitalbeitrag leave days (KVV Art. 104 Abs. 1bis)', () => {
+  const stay = (leaveDays?: number): Invoice => ({
+    ...invoice('a', '2026-11-02', francs(3000)),
+    dischargeDate: '2026-11-09',
+    ...(leaveDays !== undefined && { leaveDays }),
+  });
+  const lineOf = (leaveDays?: number) => computeStatement(adult, [stay(leaveDays)], 2026).lines[0];
+
+  it('a stay of 7 days with 2 leave days bills 5 days, Spitalbeitrag 75', () => {
+    expect(lineOf(2)).toMatchObject({ billableDays: 5, spitalbeitrag: francs(75) });
+  });
+
+  it('a stay without leave days bills all 7 days', () => {
+    expect(lineOf()?.billableDays).toBe(7);
+  });
+
+  it.each([7, 10])('%s leave days on a 7 day stay bill 0 days, not a negative amount', (days) => {
+    expect(lineOf(days)).toMatchObject({ billableDays: 0, spitalbeitrag: francs(0) });
+  });
+});
+
 describe('Spitalbeitrag exemptions (KVV Art. 104 Abs. 2)', () => {
   const stay = { ...invoice('a', '2026-09-07', francs(1000)), dischargeDate: '2026-09-12' };
   const spitalbeitragOf = (p: InsuredPerson) =>

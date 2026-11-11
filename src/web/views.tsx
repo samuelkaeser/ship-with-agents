@@ -146,6 +146,10 @@ export function PersonPage({ person, invoices, statement, years, errors = [] }: 
           Austrittsdatum (nur bei Spitalaufenthalt)
           <input type="date" name="dischargeDate" />
         </label>
+        <label>
+          Urlaubstage (nur bei Spitalaufenthalt)
+          <input type="text" name="leaveDays" inputmode="numeric" placeholder="0" />
+        </label>
         <button type="submit">Rechnung speichern</button>
       </form>
 
