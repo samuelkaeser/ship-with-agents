@@ -5,7 +5,7 @@ umask 077
 
 key_file="$HOME/.claude/anthropic-key"
 
-printf 'Schlüssel vom Zettel einfügen (die Eingabe bleibt unsichtbar), dann Enter: '
+printf 'Schlüssel von der Schlüssel-Seite einfügen (die Eingabe bleibt unsichtbar), dann Enter: '
 read -rs key || true
 echo
 key="${key//[[:space:]]/}"
