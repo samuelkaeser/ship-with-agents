@@ -39,7 +39,7 @@ Ihr arbeitet zu zweit an einer Feature-Karte. Fast jeder Schritt ist ein Befehl 
 3. `/grill-with-docs`: Der Agent befragt euch zur Karte, bis alle offenen Punkte geklärt sind. Antworten kommen von euch, Wissen zu den Regeln steht in `docs/kvg-rules.md`.
 4. `/to-spec`: Aus dem Gespräch wird eine Spec in `.scratch/<feature>/spec.md`.
 5. `/to-tickets`: Die Spec wird in kleine Tickets zerlegt, eines pro Datei in `.scratch/<feature>/issues/`.
-6. `/implement`: Der Agent setzt ein Ticket um, Test zuerst, dann Code. Das dauert. Nutzt die Zeit: Schreibt drei Abnahmefälle (Zahlenbeispiele aus eurer eigenen Spec, z.B. Eingabe und erwarteter Betrag in CHF) in `.scratch/<feature>/abnahme.md`. Ist der Agent fertig, gebt sie in die laufende App ein und prüft, ob das Ergebnis stimmt. Tipp: Öffnet die Testdatei im Editor neben dem Terminal, statt dem Log zuzusehen.
+6. `/implement`: Schreibt zuerst drei Abnahmefälle (Zahlenbeispiele aus eurer eigenen Spec, z.B. Eingabe und erwarteter Betrag in CHF) in `.scratch/<feature>/abnahme.md`, bevor der Agent baut. Dann Ticket für Ticket: `/clear`, `/implement` mit der Ticket-Datei. Der Agent schreibt zuerst einen Test, der rot ist, dann den Code. Ein Ticket dauert ein paar Minuten. Nach jedem Commit gebt ihr den passenden Fall in die laufende App ein und prüft, ob das Ergebnis stimmt. Ziel ist das ganze Feature. Seid ihr fertig, nehmt ihr eine zweite Karte, diesmal alleine.
 7. `/clear`, dann `/code-review main`: Ein frischer Agent prüft den ganzen Branch gegen die Regeln und die Spec. Nehmt den Eintrag mit `(project)`, nicht `/review`.
 
 Ihr entscheidet, der Agent schreibt den Code.
