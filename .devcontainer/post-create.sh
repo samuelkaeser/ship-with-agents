@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Pre-answers Claude Code's first-run questions (theme, folder trust, API key
-# source, bypass-mode warning). Safe to run repeatedly: existing keys are kept.
+# source, bypass-mode warning) and starts Claude Code in bypass-permissions mode.
+# Bypass must live in the user settings: since Claude Code 2.1.257 the project
+# .claude/settings.json cannot set it (and would override the user value).
+# Safe to run repeatedly: existing keys are kept.
 set -euo pipefail
 
 workspace="${1:-$PWD}"
@@ -32,5 +35,6 @@ merge_json "$HOME/.claude.json" "$(node -e '
 merge_json "$HOME/.claude/settings.json" '{
   "apiKeyHelper": "cat ~/.claude/anthropic-key",
   "model": "claude-sonnet-5-5",
+  "permissions": { "defaultMode": "bypassPermissions" },
   "skipDangerousModePermissionPrompt": true
 }'
