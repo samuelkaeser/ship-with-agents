@@ -8,7 +8,7 @@ soll nachvollziehen können, warum sie mehr bezahlt.
 Wann das gilt, welche Ausnahmen es gibt und wie es sich auf den Deckel auswirkt, ist offen und
 gehört in den Grill. Grundlage: `docs/kvg-rules.md`.
 
-## Vor dem Grill (5 Minuten)
+## App und Karte
 
 1. Startet die App mit `pnpm dev`, öffnet im Codespace den Tab **Ports** und klickt auf das Globus-Symbol bei Port 3000. Klickt in der Liste **Versicherte Personen** auf **Peter Sparfuchs**. Erfasst unter **Neue Rechnung erfassen** eine Rechnung: Behandlungsdatum 2026-11-10, Rechnungsdatum 2026-11-12, Betrag in CHF 100, Beschreibung "Medikament", dann **Rechnung speichern**. Ihr seht eine neue Zeile unter **Kostenbeteiligung 2026**: Franchise CHF 0.00, Selbstbehalt CHF 10.00, Patient zahlt CHF 10.00, Kasse zahlt CHF 90.00. Die Zeile **Total 2026** bei Patient zahlt wächst von CHF 2'530.00 auf CHF 2'540.00.
 

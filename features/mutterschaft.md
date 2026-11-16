@@ -8,7 +8,7 @@ dass es um Mutterschaft geht, und die Abrechnung soll das berücksichtigen.
 Was genau wann gilt und was gespeichert werden muss, ist offen und gehört in den Grill.
 Grundlage: `docs/kvg-rules.md`.
 
-## Vor dem Grill (5 Minuten)
+## App und Karte
 
 1. Startet die App mit `pnpm dev`, öffnet im Codespace den Tab **Ports** und klickt auf das Globus-Symbol bei Port 3000. Klickt in der Liste **Versicherte Personen** auf **Erika Beispiel**. Erfasst unter **Neue Rechnung erfassen** eine Rechnung: Behandlungsdatum 2026-06-15, Rechnungsdatum 2026-06-20, Betrag in CHF 200, Beschreibung "Grippe-Besuch", dann **Rechnung speichern**. Ihr seht eine neue Zeile unter **Kostenbeteiligung 2026**: Franchise CHF 0.00, Selbstbehalt CHF 20.00, Patient zahlt CHF 20.00, Kasse zahlt CHF 180.00. Die Zeile **Total 2026** bei Patient zahlt wächst von CHF 770.00 auf CHF 790.00.
 

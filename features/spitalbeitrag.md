@@ -7,7 +7,7 @@ Spitalfälle deshalb zu tief.
 
 Die Regeln und Sonderfälle sind noch offen, das klären wir im Grill. Grundlage: `docs/kvg-rules.md`.
 
-## Vor dem Grill (5 Minuten)
+## App und Karte
 
 1. Startet die App mit `pnpm dev`, öffnet im Codespace den Tab **Ports** und klickt auf das Globus-Symbol bei Port 3000. Klickt in der Liste **Versicherte Personen** auf **Erika Beispiel**. Erfasst unter **Neue Rechnung erfassen** eine Rechnung: Behandlungsdatum 2026-09-01, Rechnungsdatum 2026-09-10, Betrag in CHF 1000, Beschreibung "Spital", dann **Rechnung speichern**. Ihr seht eine neue Zeile unter **Kostenbeteiligung 2026**: Franchise CHF 0.00, Selbstbehalt CHF 100.00, Patient zahlt CHF 100.00, Kasse zahlt CHF 900.00. Die Zeile **Total 2026** bei Patient zahlt wächst von CHF 770.00 auf CHF 870.00.
 

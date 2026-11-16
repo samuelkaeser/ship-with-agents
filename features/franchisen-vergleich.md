@@ -20,7 +20,7 @@ und auch ein Jahr ohne Rechnungen soll eine brauchbare Antwort geben.
 Was "am günstigsten" genau heisst und wie wir mit Randfällen umgehen, ist offen und gehört in den
 Grill. Grundlage: `docs/kvg-rules.md`.
 
-## Vor dem Grill (5 Minuten)
+## App und Karte
 
 1. Startet die App mit `pnpm dev`, öffnet im Codespace den Tab **Ports** und klickt auf das Globus-Symbol bei Port 3000. Klickt in der Liste **Versicherte Personen** auf **Peter Sparfuchs**. Erfasst unter **Neue Rechnung erfassen** eine Rechnung: Behandlungsdatum 2026-11-10, Rechnungsdatum 2026-11-12, Betrag in CHF 1000, Beschreibung "Kontrolle", dann **Rechnung speichern**. Ihr seht eine neue Zeile unter **Kostenbeteiligung 2026**: Franchise CHF 0.00, Selbstbehalt CHF 100.00, Patient zahlt CHF 100.00, Kasse zahlt CHF 900.00. Die Zeile **Total 2026** bei Patient zahlt wächst von CHF 2'530.00 auf CHF 2'630.00.
 
