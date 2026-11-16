@@ -22,7 +22,7 @@ Wenn der Schlüssel abgelehnt wird: `./setup-key.sh` nochmals ausführen, sonst 
 
 - `AGENTS.md`: die Regeln für den Agenten (`CLAUDE.md` verweist darauf). Kurz halten.
 - `GLOSSARY.md`: die Fachbegriffe der App (Franchise, Selbstbehalt, Rappen, ...).
-- `docs/kvg-rules.md`: die KVG-Regeln mit Artikelnummern. Hier schaut ihr nach, wenn der Agent fragt.
+- `docs/kvg-rules.md`: die KVG-Regeln mit Artikelnummern. Der Agent liest sie selber. Ihr schaut hier nach, wenn ihr prüfen wollt, was er über die Regeln behauptet.
 - `features/`: vier Feature-Karten. Ihr wählt eine.
 - `.claude/skills/`: die Skills für den Ablauf unten.
 - `.scratch/<feature>/`: hier landen eure Spec und die Tickets. Sie werden committet.
