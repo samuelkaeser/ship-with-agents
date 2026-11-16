@@ -5,7 +5,6 @@
     "CLAUDE_CODE_RETRY_WATCHDOG": "1"
   },
   "permissions": {
-    "defaultMode": "acceptEdits",
     "allow": [
       "Bash(pnpm *)",
       "Bash(git status *)",
