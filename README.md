@@ -2,6 +2,8 @@
 
 Vorlage für den ETH-Workshop "How to ship reliable software with AI agents" (17.11.2026). Die Vorlage enthält die Umgebung (Codespace, Claude Code, Skills) und eine kleine App, "Krankenkasse light". Sie rechnet aus, was eine versicherte Person nach den Schweizer KVG-Regeln selber zahlt (Franchise, Selbstbehalt). Zu dieser App fügt ihr am Workshop eine Funktion hinzu.
 
+Der Ablauf des Abends auf einer Seite: [HANDOUT.md](HANDOUT.md).
+
 So startest du:
 
 1. `github.com/samuelkaeser/ship-with-agents` öffnen.
