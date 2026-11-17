@@ -25,6 +25,9 @@ The pre-commit hook runs prettier, typecheck and tests. Never skip it.
 3. Every rule change comes with a test that names the case.
 4. Code, comments and docs in English. UI text in German. German domain terms (Franchise,
    Selbstbehalt, Rappen) stay as they are.
+5. No feature without a spec. When asked to add or change a feature and there is no spec for it
+   under `.scratch/<feature>/`, write no code. First ask the open decisions as numbered questions,
+   each with a recommended answer.
 
 ## Agent skills
 
