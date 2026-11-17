@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to ship reliable software with AI agents</title>
+<!--
+  Workshop-Deck, ein File, keine externen Requests.
+  Tasten: Pfeil rechts / Leertaste / PgDn = weiter (inkl. Builds), Pfeil links / PgUp = zurueck,
+  Home / End = erste / letzte Folie, f = Vollbild, n = Sprechernotizen ein/aus.
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#000;-webkit-font-smoothing:antialiased;user-select:none}
+:root{
+  --bg:#07080c;--fg:#f6f8fd;--sec:#cdd4e4;--accent:#2ef2c4;--red:#ff6a7c;--amber:#ffc65c;
+  --panel:#101521;--line:#8c98ba;--chip:#1b2235;--chipline:#46537a;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;
+  font-family:var(--sans);color:var(--fg);hyphens:none;-webkit-hyphens:none;overflow-wrap:normal;word-break:normal;
+  background:radial-gradient(1100px 760px at 50% 48%,#131a2a 0%,#0a0c13 55%,#05060a 100%)}
+svg text{font-family:var(--sans)}
+.notes{display:none}
+code,.mono{font-family:var(--mono)}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility 0s .3s}
+.slide.active{opacity:1;visibility:visible;transition:opacity .3s ease}
+.pad{position:absolute;left:110px;right:110px}
+
+/* progress strip */
+.strip{position:absolute;left:110px;top:34px;display:flex;align-items:center;gap:0;height:56px}
+.strip .st{display:flex;align-items:center;height:56px;padding:0 22px;border:2px solid var(--chipline);border-radius:30px;
+  font-size:28px;font-weight:600;color:var(--sec);background:transparent;white-space:nowrap}
+.strip .st b{font-weight:800;margin-right:10px}
+.strip .st.cur{background:var(--accent);border-color:var(--accent);color:#04100c;font-weight:800}
+.strip .ln{width:26px;height:3px;background:var(--chipline)}
+
+/* type */
+h1,h2{font-weight:800;letter-spacing:-.01em;line-height:1.05;hyphens:none}
+h2.title{position:absolute;left:110px;right:110px;top:122px;font-size:80px;white-space:nowrap}
+.sec{color:var(--sec)}
+.acc{color:var(--accent)}
+.chip{display:inline-block;font-family:var(--mono);background:var(--chip);border:2px solid var(--chipline);border-radius:12px;
+  padding:2px 16px;color:var(--fg);white-space:nowrap;line-height:1.3}
+.chip.acc{color:var(--accent)}
+/* repo marker: files and folders that live in the participants' repo */
+.repo::before{content:"";display:inline-block;width:.9em;height:.75em;margin-right:.35em;vertical-align:-.04em;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 20'%3E%3Cpath fill='%232ef2c4' d='M0 3a3 3 0 0 1 3-3h6l3 3h9a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3z'/%3E%3C/svg%3E") center/contain no-repeat}
+.slide:has(.repo)::after{content:"= Datei oder Ordner in eurem Repo";position:absolute;left:200px;bottom:22px;padding-left:36px;font-size:24px;font-weight:600;color:#aeb8d2;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 20'%3E%3Cpath fill='%232ef2c4' d='M0 3a3 3 0 0 1 3-3h6l3 3h9a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3z'/%3E%3C/svg%3E") left center/26px auto no-repeat}
+
+/* builds */
+[data-at]{opacity:0;transform:translateY(24px);transition:opacity .45s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+[data-at].on{opacity:1;transform:none}
+
+/* corner badge on block slides */
+.badge{position:absolute;right:60px;bottom:56px;width:640px;padding:18px 28px 20px;border:3px solid var(--accent);border-radius:22px;
+  background:rgba(14,17,26,.95)}
+.badge .until{font-size:60px;font-weight:800;color:var(--accent);line-height:1.05}
+.badge .art{margin-top:0;font-size:30px;color:var(--fg);line-height:1.3}
+.badge .art small{display:block;font-size:26px;color:var(--sec);font-weight:600;margin-bottom:2px}
+.badge .art code{font-size:28px;color:var(--fg)}
+
+/* start slide */
+.start ol.steps li{gap:18px;margin-bottom:9px;line-height:1.25}
+.start .num{width:46px;height:46px;font-size:26px;margin-top:0}
+.start .chip{font-size:.9em;padding:0 10px;border-radius:9px}
+.shot{position:absolute;border:3px solid var(--line);border-radius:10px}
+.shot img{display:block;width:100%;border-radius:7px}
+.mk{position:absolute;border:4px solid var(--amber);border-radius:8px;box-shadow:0 0 0 3px rgba(0,0,0,.65)}
+.mk.thin{border-width:3px;border-style:dashed}
+.mk b{position:absolute;left:-44px;top:50%;margin-top:-16px;width:32px;height:32px;border-radius:50%;background:var(--amber);color:#1a1200;
+  font-size:21px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #000}
+
+.pv #counter,.pv #notesbox{display:none!important}
+.pv .slide{transition:none!important}
+/* counter */
+#counter{position:absolute;left:40px;bottom:22px;font-size:24px;color:#aeb8d2;font-weight:600;letter-spacing:.04em;z-index:5}
+#notesbox{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:#fff;color:#111;font:18px/1.45 system-ui,sans-serif;
+  padding:14px 24px;display:none;z-index:99;user-select:text;border-top:4px solid var(--accent)}
+
+/* shared layouts */
+.card{background:var(--panel);border:3px solid var(--line);border-radius:26px}
+.num{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:var(--accent);color:#04100c;
+  font-weight:800;font-size:36px;flex:none}
+ol.steps{list-style:none}
+ol.steps li{display:flex;align-items:flex-start;gap:24px;font-size:var(--fs,36px);line-height:1.28;margin-bottom:26px}
+ol.steps li .num{margin-top:2px}
+ol.steps li div small{display:block;font-size:30px;color:var(--sec);margin-top:4px}
+.dia{display:block;overflow:visible}
+.ph{border:4px dashed var(--amber);border-radius:22px;background:rgba(255,198,92,.08)}
+.ph .tag{font-family:var(--mono);font-weight:700;color:var(--amber);white-space:nowrap}
+.rule{position:absolute;left:110px;bottom:78px;font-size:64px;font-weight:800;line-height:1.1;white-space:nowrap}
+
+@media print{
+  html,body{overflow:visible;background:#fff}
+  #stage{position:static;transform:none!important;width:auto;height:auto;background:none}
+  .slide{position:relative;opacity:1;visibility:visible;width:1920px;height:1080px;page-break-after:always;background:#07080c}
+  [data-at]{opacity:1;transform:none}
+  #counter,#notesbox{display:none!important}
+}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 1 START -->
+<section class="slide start" data-title="Start">
+  <h2 class="title" style="top:22px;left:60px;font-size:62px">Willkommen. So startet ihr:</h2>
+  <ol class="steps" style="position:absolute;left:60px;top:106px;width:990px;--fs:28px">
+    <li><span class="num">1</span><div><span class="chip">github.com/samuelkaeser/ship-with-agents</span> öffnen</div></li>
+    <li><span class="num">2</span><div>Grüner Button <b>Use this template</b>, dann <b>Create a new repository</b> (nicht "Open in a codespace")</div></li>
+    <li><span class="num">3</span><div><b>Include all branches</b>: Toggle auf <b>On</b> stellen</div></li>
+    <li><span class="num">4</span><div><b>Repository name</b>: <span class="chip">ship-with-agents</span> eintippen</div></li>
+    <li><span class="num">5</span><div><b>Choose visibility</b>: <b>Private</b> wählen</div></li>
+    <li><span class="num">6</span><div><b>Create repository</b> klicken</div></li>
+    <li><span class="num">7</span><div>Im neuen Repo: grüner Button <b>Code</b> (rechts über der Dateiliste, nicht der Tab oben links), Tab <b>Codespaces</b>, <b>Create codespace on main</b>. Das dauert ein paar Minuten. Die gelben Hinweise "had recent pushes" ignorieren.</div></li>
+    <li><span class="num">8</span><div>Schlüssel-Seite öffnen, Raum-Passwort eintippen, <b>Schlüssel holen</b>, <b>Kopieren</b></div></li>
+    <li><span class="num">9</span><div>Im Codespace unten ins Terminal klicken, <span class="chip">./setup-key.sh</span> tippen, Enter. Schlüssel einfügen, Enter (er bleibt unsichtbar, das ist normal). Es erscheint "Bereit."</div></li>
+    <li><span class="num">10</span><div><span class="chip">claude</span> tippen, Enter. Dann <span class="chip">Sag Hallo in einem Satz.</span> tippen, Enter. Der Agent antwortet.</div></li>
+    <li><span class="num">11</span><div>Zweites Terminal mit dem <b>+</b> oben rechts im Terminal-Bereich öffnen, <span class="chip">pnpm dev</span> tippen, Enter. Tab <b>Ports</b>, Globe-Icon bei Port 3000. Die App zeigt eine Liste von Personen.</div></li>
+  </ol>
+  <div class="card" style="position:absolute;left:1080px;top:100px;width:780px;padding:12px 26px 14px;border-color:var(--accent)">
+    <div class="sec" style="font-size:22px;font-weight:700">Vorlage-Repo</div>
+    <div class="mono acc" style="font-size:30px;font-weight:700;white-space:nowrap">github.com/samuelkaeser/ship-with-agents</div>
+    <div class="sec" style="font-size:22px;font-weight:700;margin-top:10px">Schlüssel-Seite</div>
+    <div class="mono acc" style="font-size:30px;font-weight:700;white-space:nowrap">key-page.samuelkaeser76.workers.dev</div>
+  </div>
+  <div class="shot" style="left:1080px;top:278px;width:440px">
+    <img src="img/door-create-repo.png" alt="GitHub: Create a new repository">
+    <div class="mk" style="left:81.3%;top:26%;width:7%;height:5.8%"><b>3</b></div>
+    <div class="mk" style="left:30.3%;top:45.6%;width:59.6%;height:6.2%"><b>4</b></div>
+    <div class="mk" style="left:74.4%;top:82.2%;width:13.8%;height:6.2%"><b>5</b></div>
+    <div class="mk" style="left:72.9%;top:92.6%;width:17.3%;height:6.2%"><b>6</b></div>
+  </div>
+  <div class="card" style="position:absolute;left:1544px;top:278px;width:316px;height:353px;padding:16px 22px;border-color:var(--accent)">
+    <div class="sec" style="font-size:24px;font-weight:700">Raum-Passwort</div>
+    <div class="mono acc" style="font-size:56px;font-weight:800;line-height:1.25;margin-top:14px;white-space:nowrap">am Abend<br>gezeigt</div>
+    <div class="sec" style="font-size:20px;font-weight:600;margin-top:6px;white-space:nowrap">eine Zeile, mit Bindestrichen</div>
+  </div>
+  <div class="shot" style="left:1080px;top:662px;width:780px">
+    <img src="img/door-codespace.png" alt="GitHub: Code, Codespaces">
+    <div class="mk" style="left:62.5%;top:58.3%;width:9.2%;height:7.4%"><b>7</b></div>
+    <div class="mk thin" style="left:38.5%;top:29.8%;width:7.6%;height:6.4%"></div>
+    <div class="mk thin" style="left:40.7%;top:62.7%;width:15.2%;height:8.8%"></div>
+  </div>
+</section>
+
+<section class="slide" data-title="Titel">
+  <div class="pad" style="top:250px">
+    <h1 style="font-size:106px">How to ship reliable<br>software with AI agents</h1>
+    <div style="margin-top:56px;font-size:44px;font-weight:600">Dienstag, 17.11.2026, 17:00 bis 20:00</div>
+    <div class="sec" style="margin-top:14px;font-size:40px">ipt, Löwenstrasse 32, Zürich</div>
+    <div style="margin-top:70px;font-size:56px;font-weight:800">Samuel Käser <span class="sec" style="font-weight:600">· ipt</span></div>
+  </div>
+</section>
+
+<!-- 3 WHO -->
+<section class="slide" data-title="Wer ich bin">
+  <h2 class="title" style="font-size:104px;top:170px">Samuel Käser</h2>
+  <div class="pad" style="top:340px;font-size:56px;line-height:1.3;font-weight:600">
+    <div style="margin-bottom:44px">Consultant bei ipt</div>
+    <div style="margin-bottom:44px">Baut Software für Kunden wie die Schweizer Bundesverwaltung</div>
+    <div>Nutzt diesen Ablauf jeden Tag auf Produktivcode</div>
+  </div>
+</section>
+
+<!-- 4 LIVE DEMO -->
+<section class="slide" data-title="Unsere App">
+  <h2 class="title" style="font-size:84px;top:120px">Unsere App heute: Krankenkasse light</h2>
+  <div class="pad" style="top:300px;font-size:54px;line-height:1.25;font-weight:700">
+    <div style="margin-bottom:46px">Rechnet aus, was Versicherte selber zahlen
+      <div class="sec" style="font-size:38px;font-weight:600;margin-top:8px">Franchise und Selbstbehalt, nach den Schweizer Regeln (KVG)</div></div>
+    <div style="margin-bottom:46px">Beispiel: Rechnung <span class="mono">CHF 5'000</span>, Erika zahlt <span class="mono acc">CHF 770</span>
+      <div class="sec" style="font-size:38px;font-weight:600;margin-top:8px">Den Rest, CHF 4'230, zahlt die Kasse</div></div>
+    <div style="color:var(--amber)">Was fehlt: der Spitalbeitrag
+      <div class="sec" style="font-size:38px;font-weight:600;margin-top:8px">CHF 15 pro Spitaltag für Erwachsene. Die App kennt keine Spitaltage.</div></div>
+  </div>
+</section>
+
+<section class="slide" data-title="Live-Demo">
+  <div class="pad" style="top:0;bottom:0;display:flex;flex-direction:column;justify-content:center">
+    <div style="width:100%;background:#0b0f19;border:3px solid var(--chipline);border-radius:22px;padding:70px 64px;font-family:var(--mono);font-size:64px;line-height:1.3;white-space:nowrap">
+      <span class="acc">&gt;</span> Füge der App den Spitalbeitrag hinzu.<span style="display:inline-block;width:.55em;height:1em;background:var(--accent);vertical-align:-.12em;margin-left:.15em"></span>
+    </div>
+    <div class="sec" style="margin-top:44px;font-size:42px;font-weight:600">Derselbe Prompt, zwei Ordner: euer Repo heute und ein vorbereitetes Repo.</div>
+  </div>
+</section>
+
+<!-- 5 DECISIONS -->
+<section class="slide" data-title="Entscheide" data-steps="5">
+  <h2 class="title" style="top:96px;white-space:normal;line-height:1.08">Was hat der Agent entschieden,<br>bevor jemand gefragt wurde?</h2>
+  <div class="pad" style="top:300px;display:grid;grid-template-columns:1fr 1fr;gap:28px">
+    <div class="card" data-at="1" style="padding:30px 36px;height:216px"><div style="font-size:52px;font-weight:800">Tage von Hand</div><div class="sec" style="font-size:34px;margin-top:12px;line-height:1.3">Anzahl pro Rechnung, kein Eintritts- oder Austrittsdatum</div></div>
+    <div class="card" data-at="2" style="padding:30px 36px;height:216px"><div style="font-size:52px;font-weight:800">Nur Kinder befreit</div><div class="sec" style="font-size:34px;margin-top:12px;line-height:1.3">Studierende und Mutterschaft weggelassen</div></div>
+    <div class="card" data-at="3" style="padding:30px 36px;height:216px"><div style="font-size:52px;font-weight:800">Obendrauf</div><div class="sec" style="font-size:34px;margin-top:12px;line-height:1.3">Zählt nicht zum Deckel von CHF 700</div></div>
+    <div class="card" data-at="4" style="padding:30px 36px;height:216px"><div style="font-size:48px;font-weight:800;white-space:nowrap">Neues Feld an der Rechnung</div><div class="sec" style="font-size:34px;margin-top:12px;line-height:1.3"><span class="chip" style="font-size:32px">hospitalDays</span></div></div>
+  </div>
+  <div class="pad acc" data-at="5" style="top:820px;font-size:84px;font-weight:800;line-height:1.1;white-space:nowrap">Wer hätte das gleich entschieden?</div>
+</section>
+
+<!-- 6 SAME MODEL -->
+<section class="slide" data-title="Gleiches Modell" data-steps="3">
+  <h2 class="title">Gleiches Modell, gleicher Prompt</h2>
+  <div class="card pad" data-at="1" style="top:262px;left:110px;right:auto;width:830px;height:470px;padding:36px 44px;border-color:var(--amber)">
+    <div class="sec" style="font-size:38px;font-weight:700">Euer Repo heute</div>
+    <div style="font-size:64px;font-weight:800;line-height:1.1;margin-top:10px;color:var(--amber)">baut sofort</div>
+    <ul style="list-style:none;margin-top:26px;font-size:36px;line-height:1.3">
+      <li style="margin-bottom:12px">etwa 2 Minuten</li>
+      <li style="margin-bottom:12px">9 Dateien in einer Änderung, Tests grün</li>
+      <li>Annahmen stehen am Schluss in der Antwort</li>
+    </ul>
+  </div>
+  <div class="card pad" data-at="2" style="top:262px;left:980px;right:auto;width:830px;height:470px;padding:36px 44px;border-color:var(--accent)">
+    <div class="sec" style="font-size:38px;font-weight:700">Vorbereitetes Repo</div>
+    <div style="font-size:64px;font-weight:800;line-height:1.1;margin-top:10px" class="acc">schreibt keinen Code</div>
+    <ul style="list-style:none;margin-top:26px;font-size:36px;line-height:1.3">
+      <li style="margin-bottom:12px">fragt zuerst: Fragen mit Empfehlung</li>
+      <li style="margin-bottom:12px">nach etwa 20 Sekunden</li>
+      <li>Darin: Regeln, Glossar, Befehle</li>
+    </ul>
+  </div>
+  <div class="pad acc" data-at="3" style="top:800px;font-size:68px;font-weight:800;line-height:1.1;white-space:nowrap">Der Unterschied ist das Repo, nicht das Modell.</div>
+</section>
+
+<!-- 7 TWO REASONS -->
+<section class="slide" data-title="Zwei Gründe" data-steps="2">
+  <h2 class="title">Zwei Gründe, warum es schiefgeht</h2>
+  <div class="card pad" data-at="1" style="top:268px;left:110px;right:auto;width:790px;height:540px;padding:40px 44px">
+    <span class="num">A</span>
+    <div style="font-size:58px;font-weight:800;line-height:1.12;margin-top:26px">Der Agent weiss nicht, was du willst.</div>
+    <div class="sec" style="font-size:40px;line-height:1.3;margin-top:30px">Er füllt jede Lücke mit einer plausiblen Annahme und baut los.</div>
+  </div>
+  <div class="card pad" data-at="2" style="top:268px;left:940px;right:auto;width:870px;height:540px;padding:40px 44px">
+    <span class="num">B</span>
+    <div style="font-size:50px;font-weight:800;line-height:1.12;margin:26px 0 0">Die Qualität sinkt, wenn sich das Context Window füllt.</div>
+    <svg class="dia" viewBox="0 0 780 250" width="780" height="250" style="margin-top:30px">
+      <defs>
+        <linearGradient id="cw" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#2ef2c4"/><stop offset=".32" stop-color="#2ef2c4"/>
+          <stop offset=".62" stop-color="#ffc65c"/><stop offset="1" stop-color="#ff6a7c"/>
+        </linearGradient>
+      </defs>
+      <rect x="4" y="50" width="772" height="96" rx="16" fill="url(#cw)"/>
+      <rect x="4" y="50" width="772" height="96" rx="16" fill="none" stroke="#f6f8fd" stroke-width="3"/>
+      <line x1="262" y1="40" x2="262" y2="156" stroke="#07080c" stroke-width="4" stroke-dasharray="10 8"/>
+      <text x="4" y="30" fill="#2ef2c4" font-size="34" font-weight="800">Smart Zone</text>
+      <text x="776" y="30" fill="#ff6a7c" font-size="34" font-weight="800" text-anchor="end">Qualität sinkt</text>
+      <text x="4" y="212" fill="#cdd4e4" font-size="32" font-weight="600">Anfang</text>
+      <text x="776" y="212" fill="#cdd4e4" font-size="32" font-weight="600" text-anchor="end">voll</text>
+      <line x1="170" y1="196" x2="600" y2="196" stroke="#cdd4e4" stroke-width="4"/>
+      <polygon points="600,184 624,196 600,208" fill="#cdd4e4"/>
+    </svg>
+  </div>
+</section>
+
+<!-- 8 PIPELINE -->
+<section class="slide" data-title="Der Ablauf">
+  <h2 class="title">Die Lösung ist ein Ablauf, kein besserer Prompt</h2>
+  <div class="pad" style="top:290px">
+    <svg class="dia" viewBox="0 0 1700 520" width="1700" height="520">
+      <defs><marker id="ah" markerUnits="userSpaceOnUse" markerWidth="22" markerHeight="22" refX="14" refY="11" orient="auto"><path d="M0 0L22 11L0 22z" fill="#2ef2c4"/></marker></defs>
+      <g id="pl"></g>
+    </svg>
+  </div>
+  <div class="pad" style="top:818px;font-size:46px;font-weight:700">Jeder Schritt endet mit einer Datei, die der nächste braucht.</div>
+  <div class="pad acc" style="top:896px;font-size:72px;font-weight:800;line-height:1.1;white-space:nowrap">Ihr entscheidet, der Agent baut, ihr prüft.</div>
+</section>
+
+<!-- 9 SETUP -->
+<section class="slide" data-title="Setup">
+  <h2 class="title">Setup-Check: bis jemand antwortet</h2>
+  <div class="pad" style="top:260px;right:auto;width:1020px">
+    <ol class="steps">
+      <li><span class="num">9</span><div>Im Terminal <span class="chip">./setup-key.sh</span><small>Schlüssel einfügen, Enter. Es erscheint "Bereit."</small></div></li>
+      <li><span class="num">10</span><div><span class="chip">claude</span>, dann <span class="chip">Sag Hallo in einem Satz.</span><small>Der Agent antwortet</small></div></li>
+      <li><span class="num">11</span><div>Zweites Terminal mit <b>+</b>: <span class="chip">pnpm dev</span><small>Tab Ports, Globe-Icon bei Port 3000</small></div></li>
+    </ol>
+  </div>
+  <div class="card pad" style="top:270px;left:1190px;right:auto;width:620px;height:410px;padding:34px 36px;border-color:var(--accent)">
+    <div style="font-size:36px;font-weight:700;color:var(--sec)">Schlüssel-Seite</div>
+    <div style="font-size:30px;color:var(--sec);margin-top:26px">URL</div>
+    <div class="mono acc" style="font-size:30px;font-weight:700;line-height:1.25;margin-top:4px">key-page.samuelkaeser76<br>.workers.dev</div>
+    <div style="font-size:30px;color:var(--sec);margin-top:34px">Raum-Passwort</div>
+    <div class="mono acc" style="font-size:38px;font-weight:700;margin-top:4px">am Abend gezeigt</div>
+  </div>
+  <div class="pad" style="top:790px;right:auto;width:1170px;white-space:nowrap;font-size:38px;font-weight:700;line-height:1.2">Zu zweit: <span class="acc">Driver</span> tippt, <span class="acc">Navigator</span> liest mit. Wechsel in der Pause.</div>
+  <div class="badge" style="width:560px"><div class="art"><small>Ziel</small>Ein Agent antwortet</div></div>
+</section>
+
+<!-- 10 BOTSCHAFT -->
+<section class="slide" data-title="Botschaft">
+  <div class="pad" style="top:210px">
+    <div style="font-size:88px;font-weight:800;line-height:1.12">Mit Agenten tippt ihr weniger Code und entscheidet mehr.</div>
+    <div class="acc" style="margin-top:56px;font-size:88px;font-weight:800;line-height:1.12">Entscheiden kann nur, wer das Fach des Kunden versteht.</div>
+  </div>
+  <div class="pad sec" style="top:880px;font-size:48px;font-weight:600">Heute Abend ist euer Fach die Krankenkasse.</div>
+</section>
+
+<!-- 11 APP UND KARTE -->
+<section class="slide" data-title="App und Karte" data-steps="1">
+  <h2 class="title">App und Karte: erst verstehen</h2>
+  <div class="card pad" style="top:250px;left:110px;right:auto;width:1010px;padding:28px 40px 30px">
+    <div class="sec" style="font-size:32px;font-weight:700;margin-bottom:14px">Erika Beispiel, Franchise CHF 300, eine Rechnung</div>
+    <div style="font-size:38px;line-height:1.3">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Rechnung</span><span class="mono">CHF 5'000.00</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;color:var(--amber)"><span>Franchise: zahlt sie selber</span><span class="mono">CHF 300.00</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Rest über der Franchise</span><span class="mono">CHF 4'700.00</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;color:var(--accent)"><span>Selbstbehalt: 10 % vom Rest</span><span class="mono">CHF 470.00</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-weight:800;border-top:3px solid var(--line);padding-top:8px;margin-top:8px"><span>Patient zahlt (300 + 470)</span><span class="mono">CHF 770.00</span></div>
+      <div class="sec" style="display:flex;justify-content:space-between"><span>Kasse zahlt</span><span class="mono">CHF 4'230.00</span></div>
+    </div>
+    <div style="display:flex;height:34px;margin-top:22px;border-radius:10px;overflow:hidden;border:2px solid var(--line)">
+      <div style="width:6%;background:var(--amber)"></div><div style="width:9.4%;background:var(--accent)"></div><div style="width:84.6%;background:var(--chipline)"></div>
+    </div>
+  </div>
+  <div class="pad sec" style="top:782px;right:auto;width:1010px;font-size:34px;line-height:1.3">Deckel: Der Selbstbehalt hört bei <b style="color:var(--fg)">CHF 700</b> im Jahr auf, bei Kindern bei <b style="color:var(--fg)">CHF 350</b>.</div>
+  <div class="pad acc" style="top:890px;right:auto;width:1170px;white-space:nowrap;font-size:52px;font-weight:800;line-height:1.1">Wer hat die 2500er Franchise?</div>
+  <div class="card pad" data-at="1" style="top:250px;left:1190px;right:auto;width:620px;padding:30px 36px;border-color:var(--accent)">
+    <div style="font-size:42px;font-weight:800;margin-bottom:22px">Jetzt ihr, 12 Minuten</div>
+    <ol class="steps" style="--fs:32px">
+      <li style="margin-bottom:16px"><span class="num">1</span><div>Karte wählen<small>Karte = Datei in <span class="mono repo">features/</span>: ein Feature, das der App noch fehlt</small></div></li>
+      <li style="margin-bottom:16px"><span class="num">2</span><div>Rechnung der Karte erfassen<small>Abschnitt <b>App und Karte</b></small></div></li>
+      <li style="margin-bottom:14px"><span class="num">3</span><div>Den Agenten fragen. Noch nichts bauen.</div></li>
+    </ol>
+    <div class="mono" style="background:#0b0f19;border:3px solid var(--chipline);border-radius:14px;padding:16px 20px;font-size:28px;line-height:1.35"><span class="acc">&gt;</span> Erklär uns diese Karte und die Begriffe darin in fünf Sätzen. Noch nichts bauen.</div>
+  </div>
+  <div class="badge" style="width:560px"><div class="art"><small>Ziel</small>Ich verstehe App und Karte</div></div>
+</section>
+
+<!-- 12 GRILL -> SPEC -->
+<section class="slide" data-title="Grill und Spec" data-station="1,2">
+  <div class="strip"></div>
+  <h2 class="title" style="top:130px">Grill, dann Spec</h2>
+  <div class="pad" style="top:262px;right:auto;width:1140px">
+    <ol class="steps" style="--fs:42px">
+      <li><span class="num">1</span><div><span class="chip">/grill-with-docs</span> <span class="chip repo">features/&lt;karte&gt;.md</span><small>Der Agent fragt. Ihr antwortet, nicht nur "ja".</small></div></li>
+      <li><span class="num">2</span><div><span class="chip">/to-spec</span><small>Spec lesen: stehen eure Antworten drin?</small></div></li>
+    </ol>
+  </div>
+  <div class="card pad" style="top:560px;right:auto;width:1090px;padding:22px 34px 24px;border-color:var(--accent)">
+    <div class="sec" style="font-size:32px;font-weight:700">Statt nur "Ja" gibt es drei Antworten:</div>
+    <div style="font-size:46px;font-weight:800;line-height:1.3;margin-top:8px"><span class="acc">Warum?</span><br><span class="acc">Was wäre die Alternative?</span><br><span class="acc">Zeig ein Zahlenbeispiel.</span></div>
+  </div>
+  <div class="pad" style="top:262px;left:1260px;right:auto;width:560px;display:flex;flex-direction:column;gap:16px">
+    <div class="sec" style="font-size:30px;font-weight:700;margin-bottom:2px">Die vier Karten in <span class="mono repo">features/</span></div>
+    <div class="card" style="padding:14px 26px;font-size:38px;font-weight:700">Spitalbeitrag</div>
+    <div class="card" style="padding:14px 26px;font-size:38px;font-weight:700">Mutterschaft</div>
+    <div class="card" style="padding:14px 26px;font-size:38px;font-weight:700">Medikamente 40%</div>
+    <div class="card" style="padding:14px 26px;font-size:38px;font-weight:700">Franchisen-Vergleich</div>
+  </div>
+  <div class="rule acc">Ihr entscheidet. Der Agent fragt.</div>
+  <div class="badge"><div class="art"><small>Artefakt</small><code class="repo">.scratch/&lt;feature&gt;/spec.md</code></div></div>
+</section>
+
+<!-- 13 SPEC -> TICKETS -->
+<section class="slide" data-title="Spec zu Tickets" data-station="3">
+  <div class="strip"></div>
+  <h2 class="title" style="top:130px">Dünne Scheiben statt Schichten</h2>
+  <div class="pad" style="top:250px">
+    <svg class="dia" viewBox="0 0 1700 480" width="1700" height="480">
+      <!-- left: layers -->
+      <text x="400" y="44" fill="#ff6a7c" font-size="40" font-weight="800" text-anchor="middle">Nach Schichten</text>
+      <rect x="30" y="80" width="740" height="90" rx="14" fill="#2a1219" stroke="#ff6a7c" stroke-width="4"/>
+      <text x="400" y="138" fill="#f6f8fd" font-size="38" font-weight="700" text-anchor="middle">Ticket 3: UI</text>
+      <rect x="30" y="190" width="740" height="90" rx="14" fill="#2a1219" stroke="#ff6a7c" stroke-width="4"/>
+      <text x="400" y="248" fill="#f6f8fd" font-size="38" font-weight="700" text-anchor="middle">Ticket 2: API</text>
+      <rect x="30" y="300" width="740" height="90" rx="14" fill="#2a1219" stroke="#ff6a7c" stroke-width="4"/>
+      <text x="400" y="358" fill="#f6f8fd" font-size="38" font-weight="700" text-anchor="middle">Ticket 1: Datenbank</text>
+      <text x="400" y="446" fill="#cdd4e4" font-size="34" font-weight="600" text-anchor="middle">Bis zum Schluss läuft nichts</text>
+      <!-- divider -->
+      <line x1="850" y1="30" x2="850" y2="450" stroke="#46537a" stroke-width="3"/>
+      <!-- right: slices -->
+      <text x="1275" y="44" fill="#2ef2c4" font-size="40" font-weight="800" text-anchor="middle">Dünne Scheiben</text>
+      <g id="slices"></g>
+      <text x="1275" y="446" fill="#cdd4e4" font-size="34" font-weight="600" text-anchor="middle">Tracer Bullets: jedes Ticket ist zeigbar</text>
+    </svg>
+  </div>
+  <div class="pad" style="top:782px;right:auto;width:1160px;font-size:50px;font-weight:800;line-height:1.15">Ticket 1: <span class="acc">klein</span>, <span class="acc">Ende zu Ende</span>, <span class="acc">allein testbar</span>?</div>
+  <div class="pad" style="top:900px;right:auto;width:1170px;font-size:34px;line-height:1.3;color:var(--sec)">Dann starten: <span class="chip" style="font-size:30px;color:var(--fg)">/to-tickets</span> <span class="chip repo" style="font-size:30px;color:var(--fg)">.scratch/&lt;feature&gt;/spec.md</span><br>Lest den Vorschlag mit dieser Frage im Kopf.</div>
+  <div class="badge"><div class="art"><small>Artefakt</small><code class="repo">.scratch/&lt;feature&gt;/issues/</code></div></div>
+</section>
+
+<!-- 14 BREAK -->
+<section class="slide" data-title="Pause">
+  <div class="pad" style="top:0;bottom:0;display:flex;flex-direction:column;justify-content:center">
+    <h1 style="font-size:200px">Pause.</h1>
+    <div style="margin-top:50px;font-size:84px;font-weight:800" class="acc">Danach: Driver wechseln.</div>
+    <div class="sec" style="margin-top:46px;font-size:44px;font-weight:600">10 Minuten</div>
+  </div>
+</section>
+
+<!-- 15 IMPLEMENT -->
+<section class="slide" data-title="Implement" data-station="4">
+  <div class="strip"></div>
+  <h2 class="title" style="top:130px">Festlegen, bauen, prüfen</h2>
+  <div class="pad" style="top:250px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
+    <div class="card" style="padding:24px 28px;height:330px;border-color:var(--accent)"><span class="num">1</span><div style="font-size:40px;font-weight:800;line-height:1.1;margin-top:14px">Beispiele zuerst</div><div class="sec" style="font-size:30px;line-height:1.3;margin-top:10px">Drei Beispiele mit dem richtigen Ergebnis aus eurer Spec, bevor der Agent baut</div></div>
+    <div class="card" style="padding:24px 28px;height:330px"><span class="num">2</span><div style="font-size:40px;font-weight:800;line-height:1.1;margin-top:14px">Ticket starten</div><div class="sec" style="font-size:30px;line-height:1.3;margin-top:10px"><span class="chip" style="font-size:26px">/clear</span>, dann <span class="chip" style="font-size:26px">/implement</span> mit dem nächsten Ticket</div></div>
+    <div class="card" style="padding:24px 28px;height:330px"><span class="num">3</span><div style="font-size:40px;font-weight:800;line-height:1.1;margin-top:14px">Rot, dann grün</div><div class="sec" style="font-size:30px;line-height:1.3;margin-top:10px">Beim ersten Ticket zuschauen. Ein Ticket dauert ein paar Minuten.</div></div>
+    <div class="card" style="padding:24px 28px;height:330px;border-color:var(--accent)"><span class="num">4</span><div style="font-size:40px;font-weight:800;line-height:1.1;margin-top:14px">In der App prüfen</div><div class="sec" style="font-size:30px;line-height:1.3;margin-top:10px">Nach jedem Commit euer Beispiel eingeben und vergleichen</div></div>
+  </div>
+  <div class="card pad" style="top:610px;right:auto;width:1000px;padding:22px 34px;height:200px">
+    <div style="font-size:38px;font-weight:800;line-height:1.2"><span class="acc">Ziel: euer ganzes Feature</span></div>
+    <div style="font-size:32px;line-height:1.35;margin-top:8px">Ticket für Ticket: starten, prüfen, nächstes. Fertig? <b>Zweite Karte, diesmal alleine.</b></div>
+  </div>
+  <div class="card pad" style="top:610px;left:1150px;right:auto;width:660px;padding:22px 34px;height:200px">
+    <div class="sec" style="font-size:30px;font-weight:700">Beispiele, <span class="chip repo" style="font-size:26px">beispiele.md</span></div>
+    <div style="font-size:34px;line-height:1.4;margin-top:10px;font-weight:600">Erwachsene, 5 Spitaltage: CHF 75<br>Kind, 5 Tage: CHF 0</div>
+  </div>
+  <div class="pad" style="top:860px;right:auto;width:1170px;font-size:32px;color:var(--sec);line-height:1.5">Vorher im Terminal, nicht in Claude:<br><span class="chip" style="font-size:34px;color:var(--fg)">git switch -c feature/&lt;name&gt;</span></div>
+  <div class="badge"><div class="art"><small>Artefakt</small>Ganzes Feature in der App geprüft</div></div>
+</section>
+
+<!-- 16 REVIEW -->
+<section class="slide" data-title="Review" data-station="5">
+  <div class="strip"></div>
+  <h2 class="title" style="top:130px">Ein frischer Agent prüft</h2>
+  <div class="pad" style="top:244px;font-size:40px;line-height:1.25;font-weight:600">Er teilt den Kontext und die Annahmen des Implementierers nicht.</div>
+  <div class="pad" style="top:340px;display:flex;align-items:center;gap:26px;font-size:54px">
+    <span class="chip" style="padding:6px 26px">/clear</span><span class="acc" style="font-size:50px;font-weight:800">&rarr;</span><span class="chip" style="padding:6px 26px">/code-review main</span>
+  </div>
+  <div class="pad" style="top:466px;display:flex;gap:28px">
+    <div class="card" style="flex:1;padding:22px 32px"><div style="font-size:44px;font-weight:800">Standards</div><div class="sec" style="font-size:34px;margin-top:6px;line-height:1.25">Hält der Code die Regeln des Repos?</div></div>
+    <div class="card" style="flex:1;padding:22px 32px"><div style="font-size:44px;font-weight:800">Spec</div><div class="sec" style="font-size:34px;margin-top:6px;line-height:1.25">Macht er, was in der Spec steht?</div></div>
+  </div>
+  <div class="pad" style="top:664px;font-size:42px;font-weight:700;line-height:1.25"><span class="acc">Aufgabe:</span> ein Finding beheben, eines mit Grund ablehnen.</div>
+  <div class="pad" style="top:760px;right:auto;width:1180px;font-size:36px;line-height:1.35;color:var(--sec)">Im Autocomplete der Eintrag mit <b style="color:var(--fg)">(project)</b>,<br><span class="chip" style="font-size:32px">/code-review</span> und nicht <span class="chip" style="font-size:32px">/review</span></div>
+  <div class="pad acc" style="top:900px;right:auto;width:1170px;font-size:38px;font-weight:800;line-height:1.2">Erst erklärt Sam, dann startet ihr.</div>
+  <div class="badge"><div class="art"><small>Artefakt</small>Reviewter Branch, ein Fix</div></div>
+</section>
+
+<!-- 17 CALLBACK -->
+<section class="slide" data-title="Zurück zum Anfang" data-steps="2">
+  <h2 class="title">Zurück zum Anfang</h2>
+  <div class="pad" style="top:250px;font-size:54px;font-weight:800;line-height:1.3">Öffnet eure Spec:<br>Wie viele Entscheide stehen unter <span class="chip acc" style="font-size:48px">Implementation Decisions</span>?</div>
+  <div class="pad sec" style="top:430px;font-size:34px;font-weight:600"><span class="chip repo" style="font-size:32px;color:var(--fg)">.scratch/&lt;feature&gt;/spec.md</span></div>
+  <div class="card pad" data-at="1" style="top:540px;left:110px;right:auto;width:830px;height:262px;padding:34px 44px;border-color:var(--amber)">
+    <div class="sec" style="font-size:38px;font-weight:700">Am Anfang</div>
+    <div style="font-size:50px;font-weight:800;line-height:1.15;margin-top:14px;color:var(--amber)">Der Agent entscheidet, bevor jemand gefragt wurde.</div>
+  </div>
+  <div class="card pad" data-at="1" style="top:540px;left:980px;right:auto;width:830px;height:262px;padding:34px 44px;border-color:var(--accent)">
+    <div class="sec" style="font-size:38px;font-weight:700">Jetzt</div>
+    <div style="font-size:50px;font-weight:800;line-height:1.15;margin-top:14px" class="acc">Ihr habt entschieden, bevor gebaut wurde.</div>
+  </div>
+  <div class="pad acc" data-at="2" style="top:880px;font-size:72px;font-weight:800;line-height:1.1;white-space:nowrap">Ihr entscheidet, der Agent baut, ihr prüft.</div>
+</section>
+
+<!-- 18 TAKE IT HOME -->
+<section class="slide" data-title="Mitnehmen">
+  <h2 class="title">So nimmst du es mit</h2>
+  <div class="pad" style="top:262px">
+    <ol class="steps" style="margin-top:6px;--fs:40px">
+      <li><span class="num">1</span><div><span class="chip repo">.claude/skills/</span> in dein Projekt kopieren, mit der Lizenzdatei<small>Einmal <span class="chip" style="font-size:28px">/setup-matt-pocock-skills</span> ausführen</small></div></li>
+      <li><span class="num">2</span><div><span class="chip repo">AGENTS.md</span> mit wenigen prüfbaren Regeln, zum Beispiel "Geld nur in Rappen"</div></li>
+      <li><span class="num">3</span><div>Schnelle Tests, Typecheck und Pre-commit-Hook, damit der Agent Fehler selber merkt</div></li>
+      <li><span class="num">4</span><div>Specs und Tickets als Markdown im Repo, ein Ticket pro Datei</div></li>
+    </ol>
+  </div>
+  <div class="pad" style="top:900px;font-size:40px;font-weight:700"><span class="acc">Heute Abend noch:</span> Codespace stoppen unter <span class="chip" style="font-size:36px">github.com/codespaces</span></div>
+</section>
+
+<!-- 19 CLOSE -->
+<section class="slide" data-title="Schluss">
+  <div class="pad" style="top:150px">
+    <h1 style="font-size:190px">Fragen?</h1>
+    <div style="margin-top:60px;font-size:52px;font-weight:800">Danke fürs Mitmachen.</div>
+  </div>
+  <div class="ph pad" style="top:620px;right:auto;width:1180px;padding:30px 40px">
+    <div style="font-size:34px;color:var(--sec);font-weight:600">Feedback-Formular</div>
+    <div class="tag" style="font-size:52px;margin-top:8px">tally.so/r/WJEAjv</div>
+  </div>
+  <div class="pad sec" style="top:880px;font-size:38px;font-weight:600">Der Ablauf steht in <span class="mono repo">HANDOUT.md</span> in eurem Repo. Codespace stoppen.</div>
+</section>
+
+<!-- 20 BACKUP -->
+<section class="slide" data-title="Backup" data-backup="1">
+  <div style="position:absolute;left:110px;top:60px;font-size:34px;font-weight:800;letter-spacing:.14em;color:#04100c;background:var(--amber);padding:8px 26px;border-radius:10px">BACKUP</div>
+  <h2 class="title" style="top:170px">Agents im Hintergrund</h2>
+  <div class="pad" style="top:340px;font-size:46px;line-height:1.25;font-weight:600">
+    <div style="margin-bottom:56px">Mehrere Agents können parallel laufen, jeder an einem eigenen Ticket.</div>
+    <div style="margin-bottom:56px"><span class="acc" style="font-weight:800">Dabei bleiben,</span> wenn Spec oder Ticket eine Entscheidung offen lassen.</div>
+    <div><span class="acc" style="font-weight:800">Laufen lassen,</span> wenn das Ticket klein ist und Tests und Typen Fehler abfangen.</div>
+  </div>
+</section>
+
+<div id="counter"></div>
+</div>
+<div id="notesbox"></div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var counter=document.getElementById('counter');
+  var notesbox=document.getElementById('notesbox');
+  var cur=0,step=0,normalCount=slides.filter(function(s){return !s.dataset.backup}).length;
+  var NS='http://www.w3.org/2000/svg';
+  function el(n,a,t){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;return e}
+
+  /* ---- progress strip ---- */
+  var names=['Grill','Spec','Tickets','Implement','Review'];
+  slides.forEach(function(s){
+    var st=s.querySelector('.strip');if(!st)return;
+    var on=s.dataset.station.split(',').map(Number);
+    names.forEach(function(n,i){
+      if(i){var l=document.createElement('div');l.className='ln';st.appendChild(l)}
+      var d=document.createElement('div');d.className='st'+(on.indexOf(i+1)>-1?' cur':'');
+      d.innerHTML='<b>'+(i+1)+'</b>'+n;st.appendChild(d);
+    });
+  });
+
+  /* ---- slide 8 pipeline ---- */
+  var pl=document.getElementById('pl');
+  var P=[
+    {n:'Grill',c:['/grill-with-docs'],a:[['geklärte',0],['Entscheide',0]]},
+    {n:'Spec',c:['/to-spec'],a:[['spec.md',1],['.scratch/<feature>/',2]]},
+    {n:'Tickets',c:['/to-tickets'],a:[['Ticket-Dateien',0],['…/issues/',2]]},
+    {n:'Implement',c:['/implement'],a:[['Commit',0],['Test, Code, grün',3]]},
+    {n:'Review',c:['/clear','/code-review main'],a:[['Review-Bericht',0],['Standards und Spec',3]]}
+  ];
+  P.forEach(function(p,i){
+    var x=i*340+10,cx=x+150;
+    pl.appendChild(el('rect',{x:x,y:30,width:300,height:140,rx:24,fill:'#101521',stroke:'#2ef2c4','stroke-width':4}));
+    pl.appendChild(el('text',{x:x+34,y:84,fill:'#2ef2c4','font-size':34,'font-weight':800},String(i+1)));
+    pl.appendChild(el('text',{x:cx,y:130,fill:'#f6f8fd','font-size':50,'font-weight':800,'text-anchor':'middle'},p.n));
+    if(i<4)pl.appendChild(el('line',{x1:x+312,y1:100,x2:x+338,y2:100,stroke:'#2ef2c4','stroke-width':6,'stroke-linecap':'round','marker-end':'url(#ah)'}));
+    pl.appendChild(el('rect',{x:x,y:206,width:300,height:92,rx:14,fill:'#1b2235',stroke:'#46537a','stroke-width':3}));
+    var cs=p.c.length;
+    p.c.forEach(function(t,k){
+      var y=cs==1?264:238+k*40;
+      pl.appendChild(el('text',{x:cx,y:y,fill:'#f6f8fd','font-size':t.length>14?26:30,'font-family':'ui-monospace,Menlo,Consolas,monospace','font-weight':600,'text-anchor':'middle'},t));
+    });
+    /* file glyph */
+    var gy=334;
+    pl.appendChild(el('path',{d:'M'+(cx-14)+' '+gy+'h20l10 10v28h-30z',fill:'none',stroke:'#cdd4e4','stroke-width':3,'stroke-linejoin':'round'}));
+    pl.appendChild(el('path',{d:'M'+(cx+6)+' '+gy+'v10h10',fill:'none',stroke:'#cdd4e4','stroke-width':3,'stroke-linejoin':'round'}));
+    p.a.forEach(function(t,k){
+      var mono=t[1]==1||t[1]==2;
+      var a={x:cx,y:430+k*44,fill:k?'#cdd4e4':'#f6f8fd','font-size':t[1]==2?24:(k?28:34),'font-weight':k?600:700,'text-anchor':'middle'};
+      if(mono)a['font-family']='ui-monospace,Menlo,Consolas,monospace';
+      pl.appendChild(el('text',a,t[0]));
+    });
+  });
+
+  /* ---- slide 13 slices ---- */
+  var sl=document.getElementById('slices');
+  [0,1,2].forEach(function(i){
+    var x=935+i*250;
+    [['UI',80],['API',190],['DB',300]].forEach(function(r){
+      sl.appendChild(el('rect',{x:x,y:r[1],width:190,height:90,rx:12,fill:'#0f2a26',stroke:'#2ef2c4','stroke-width':4}));
+      sl.appendChild(el('text',{x:x+95,y:r[1]+58,fill:'#cdd4e4','font-size':32,'font-weight':600,'text-anchor':'middle'},r[0]));
+    });
+    sl.appendChild(el('rect',{x:x-8,y:70,width:206,height:330,rx:20,fill:'none',stroke:'#f6f8fd','stroke-width':3,'stroke-dasharray':'2 0'}));
+  });
+  /* ticket labels sit on the slices' top edge via the three UI cells' header */
+  [0,1,2].forEach(function(i){
+    var x=935+i*250;
+    sl.appendChild(el('rect',{x:x+20,y:56,width:150,height:36,rx:10,fill:'#07080c'}));
+    sl.appendChild(el('text',{x:x+95,y:84,fill:'#2ef2c4','font-size':30,'font-weight':800,'text-anchor':'middle'},'Ticket '+(i+1)));
+  });
+
+  /* ---- presenter window (key P) ---- */
+  var PV=/[?&]pv\b/.test(location.search),pw=null,t0=0;
+  if(PV){document.documentElement.classList.add('pv')}
+  function pad2(n){return (n<10?'0':'')+n}
+  function openPresenter(){
+    if(PV)return;
+    if(pw&&!pw.closed){pw.focus();return}
+    pw=window.open('','deck-presenter','width=1280,height=800');
+    if(!pw)return;
+    var d=pw.document;d.open();
+    d.write('<!doctype html><meta charset="utf-8"><title>Presenter</title><style>'
+      +'*{box-sizing:border-box}body{margin:0;background:#111318;color:#f2f4f8;font:18px/1.5 -apple-system,system-ui,sans-serif;height:100vh;display:grid;grid-template-rows:auto 1fr}'
+      +'#bar{display:flex;gap:24px;align-items:baseline;padding:10px 20px;background:#1b1f29;border-bottom:1px solid #2c3242}'
+      +'#pos{font-size:22px;font-weight:700}#clock,#timer{font-size:22px;font-variant-numeric:tabular-nums}#timer{color:#2ef2c4;cursor:pointer}#hint{margin-left:auto;color:#8a93a8;font-size:14px}'
+      +'#main{display:grid;grid-template-columns:660px 1fr;min-height:0}'
+      +'#left{padding:16px 10px 16px 20px;overflow:auto}h4{margin:0 0 6px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#8a93a8}'
+      +'.fr{width:640px;height:360px;overflow:hidden;border:1px solid #2c3242;border-radius:8px;margin-bottom:18px;background:#000}'
+      +'.fr iframe{width:1920px;height:1080px;border:0;transform:scale(.33334);transform-origin:0 0;pointer-events:none}'
+      +'.fr.sm{width:448px;height:252px}.fr.sm iframe{transform:scale(.23334)}'
+      +'#notes{padding:16px 28px 40px 18px;overflow:auto;font-size:24px;line-height:1.5}#notes:empty::before{content:"(keine Notizen)";color:#8a93a8}'
+      +'</style><div id="bar"><span id="pos"></span><span id="clock"></span><span id="timer" title="Klick: Timer auf null">00:00</span><span id="hint">Pfeiltasten oder Leertaste: weiter und zurück. Klick auf den Timer: auf null.</span></div>'
+      +'<div id="main"><div id="left"><h4>Jetzt</h4><div class="fr"><iframe id="c"></iframe></div><h4>Als Nächstes</h4><div class="fr sm"><iframe id="n"></iframe></div></div><div id="notes"></div></div>');
+    d.close();
+    t0=Date.now();
+    d.getElementById('timer').onclick=function(){t0=Date.now()};
+    d.addEventListener('keydown',function(e){
+      if(e.metaKey||e.ctrlKey||e.altKey)return;var k=e.key;
+      if(k==='ArrowRight'||k===' '||k==='PageDown'||k==='ArrowDown'){e.preventDefault();next()}
+      else if(k==='ArrowLeft'||k==='PageUp'||k==='ArrowUp'){e.preventDefault();prev()}
+    });
+    updatePresenter();
+  }
+  function pvUrl(i,st){return location.href.split('#')[0].split('?')[0]+'?pv#'+(i+1)+(st?'.'+st:'')}
+  function updatePresenter(){
+    if(!pw||pw.closed)return;
+    var d=pw.document,s=slides[cur],n=s.querySelector('.notes');
+    d.getElementById('pos').textContent=(cur+1)+' / '+normalCount+'  '+(s.dataset.title||'');
+    d.getElementById('notes').innerHTML=n?n.innerHTML.replace(/\n/g,'<br><br>'):'';
+    d.getElementById('notes').scrollTop=0;
+    var ni=cur,ns=step;if(step<maxStep(s))ns=step+1;else if(cur<slides.length-1){ni=cur+1;ns=0}
+    var c=d.getElementById('c'),x=d.getElementById('n'),cu=pvUrl(cur,step),nu=pvUrl(ni,ns);
+    if(c.getAttribute('src')!==cu)c.setAttribute('src',cu);
+    if(x.getAttribute('src')!==nu)x.setAttribute('src',nu);
+  }
+  setInterval(function(){
+    if(!pw||pw.closed)return;
+    var d=pw.document,now=new Date(),e=Math.floor((Date.now()-t0)/1000);
+    d.getElementById('clock').textContent=pad2(now.getHours())+':'+pad2(now.getMinutes());
+    d.getElementById('timer').textContent=pad2(Math.floor(e/60))+':'+pad2(e%60);
+  },1000);
+
+  /* ---- engine ---- */
+  function maxStep(s){return +s.dataset.steps||0}
+  function render(){
+    slides.forEach(function(s,i){s.classList.toggle('active',i===cur)});
+    var s=slides[cur];
+    [].forEach.call(s.querySelectorAll('[data-at]'),function(e){e.classList.toggle('on',+e.dataset.at<=step)});
+    counter.textContent=s.dataset.backup?'Backup':((cur+1)+' / '+normalCount);
+    counter.style.display=(s.dataset.title||'').indexOf('ipt: ')===0?'none':'';
+    var n=s.querySelector('.notes');notesbox.innerHTML=n?n.innerHTML.replace(/\n/g,'<br>'):'';
+    if(!PV){try{history.replaceState(null,'','#'+(cur+1)+(step?'.'+step:''))}catch(e){}}
+    updatePresenter();
+  }
+  function next(){if(step<maxStep(slides[cur]))step++;else if(cur<slides.length-1){cur++;step=0}render()}
+  function prev(){if(step>0)step--;else if(cur>0){cur--;step=maxStep(slides[cur])}render()}
+  function go(i,st){cur=Math.max(0,Math.min(slides.length-1,i));step=Math.min(st||0,maxStep(slides[cur]));render()}
+  window.__deck={go:go,next:next,prev:prev,count:function(){return slides.length},steps:function(i){return maxStep(slides[i])}};
+  function fit(){var k=Math.min(innerWidth/1920,innerHeight/1080);
+    stage.style.transform='translate('+((innerWidth-1920*k)/2)+'px,'+((innerHeight-1080*k)/2)+'px) scale('+k+')'}
+  addEventListener('resize',fit);fit();
+  addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var k=e.key;
+    if(k==='ArrowRight'||k===' '||k==='PageDown'||k==='ArrowDown'){e.preventDefault();next()}
+    else if(k==='ArrowLeft'||k==='PageUp'||k==='ArrowUp'){e.preventDefault();prev()}
+    else if(k==='Home'){e.preventDefault();go(0,0)}
+    else if(k==='End'){e.preventDefault();go(normalCount-1,0)}
+    else if(k==='f'||k==='F'){if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()}
+    else if(k==='n'||k==='N'){notesbox.style.display=notesbox.style.display==='block'?'none':'block'}
+    else if(k==='p'||k==='P'){openPresenter()}
+  });
+  addEventListener('hashchange',function(){var h=/^#(\d+)(?:\.(\d+))?$/.exec(location.hash);if(h&&(+h[1]-1!==cur||+(h[2]||0)!==step))go(+h[1]-1,+(h[2]||0))});
+  var m=/^#(\d+)(?:\.(\d+))?$/.exec(location.hash);
+  if(m)go(+m[1]-1,+(m[2]||0));else render();
+})();
+</script>
+</body>
+</html>
