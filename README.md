@@ -5,16 +5,16 @@ Vorlage für den ETH-Workshop "How to ship reliable software with AI agents" (17
 So startest du:
 
 1. `github.com/samuelkaeser/ship-with-agents` öffnen.
-2. Grüner Knopf **Use this template**, dann **Create a new repository** (nicht "Open in a codespace").
-3. **Include all branches**: Schalter auf **On** stellen, sonst fehlen die Lösungs-Branches.
+2. Grüner Button **Use this template**, dann **Create a new repository** (nicht "Open in a codespace").
+3. **Include all branches**: Toggle auf **On** stellen, sonst fehlen die Lösungs-Branches.
 4. **Repository name**: `ship-with-agents` eintippen.
 5. **Choose visibility**: **Private** wählen.
 6. **Create repository** klicken.
-7. Im neuen Repo: grüner Knopf **Code** (rechts über der Dateiliste, nicht der Reiter "Code" oben links), Reiter **Codespaces**, **Create codespace on main**. Das dauert ein paar Minuten. Die gelben Hinweise "had recent pushes" ignorieren.
+7. Im neuen Repo: grüner Button **Code** (rechts über der Dateiliste, nicht der Tab "Code" oben links), Tab **Codespaces**, **Create codespace on main**. Das dauert ein paar Minuten. Die gelben Hinweise "had recent pushes" ignorieren.
 8. Die Schlüssel-Seite öffnen (URL und Passwort stehen vorne auf der Leinwand und auf der Karte am Tisch), Raum-Passwort eintippen, **Schlüssel holen**, **Kopieren**.
 9. Im Codespace unten ins Terminal klicken, `./setup-key.sh` tippen, Enter. Schlüssel einfügen, Enter (er bleibt unsichtbar, das ist normal). Es erscheint "Bereit." Das muss vor dem ersten `claude` passieren.
 10. `claude` tippen, Enter, und zwar im Hauptordner des Repos. Dann `Sag Hallo in einem Satz.` tippen, Enter. Der Agent antwortet.
-11. Zweites Terminal mit dem **+** oben rechts im Terminal-Bereich öffnen, `pnpm dev` tippen, Enter. Reiter **Ports**, Globus-Symbol bei Port 3000. Die App zeigt eine Liste von Personen.
+11. Zweites Terminal mit dem **+** oben rechts im Terminal-Bereich öffnen, `pnpm dev` tippen, Enter. Tab **Ports**, Globe-Icon bei Port 3000. Die App zeigt eine Liste von Personen.
 
 Wenn der Schlüssel abgelehnt wird: `./setup-key.sh` nochmals ausführen, sonst die Workshop-Leitung fragen.
 
@@ -30,7 +30,7 @@ Wenn der Schlüssel abgelehnt wird: `./setup-key.sh` nochmals ausführen, sonst 
 
 ## Befehle
 
-- `pnpm dev`: startet die App. Der Codespace leitet Port 3000 weiter. Öffne den Tab **Ports** und klicke auf das Globus-Symbol bei Port 3000.
+- `pnpm dev`: startet die App. Der Codespace leitet Port 3000 weiter. Öffne den Tab **Ports** und klicke auf das Globe-Icon bei Port 3000.
 - `pnpm test`: alle Tests.
 - `pnpm typecheck`: Typenprüfung.
 - `pnpm format`: Code formatieren.
